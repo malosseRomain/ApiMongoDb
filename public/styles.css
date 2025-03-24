@@ -17,19 +17,43 @@ h1,
 h2,
 h3 {
   color: #333;
+  text-align: center;
 }
 
 button {
   margin-top: 10px;
   padding: 10px;
-  background: #007bff;
-  color: white;
   border: none;
   cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
 }
 
-button:hover {
+button[type="submit"] {
+  background: #007bff;
+  color: white;
+}
+
+button[type="submit"]:hover {
   background: #0056b3;
+}
+
+.btn-green {
+  background-color: green;
+  color: white;
+}
+
+.btn-green:hover {
+  background-color: darkgreen;
+}
+
+.btn-red {
+  background-color: red;
+  color: white;
+}
+
+.btn-red:hover {
+  background-color: darkred;
 }
 
 ul {
@@ -45,42 +69,32 @@ li {
   flex-direction: column;
   align-items: center;
   text-align: center;
-}
-
-#taskDetails {
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 5px;
   background: #f9f9f9;
+  border-radius: 5px;
 }
 
 .task-header {
   font-weight: bold;
   margin-bottom: 5px;
+  font-size: 18px;
 }
 
 .task-status {
   color: #555;
   margin-bottom: 10px;
+  font-style: italic;
 }
 
 .task-buttons {
   display: flex;
   width: 100%;
+  justify-content: space-between;
 }
 
 .task-buttons button {
   flex: 1;
   padding: 10px;
   margin: 0 2px;
-  border: none;
-  cursor: pointer;
-  background-color: #28a745;
-  color: white;
-}
-
-.task-buttons button:hover {
-  background-color: #218838;
 }
 
 .task-container {
@@ -94,6 +108,7 @@ li {
 
 .task-container h2 {
   color: #333;
+  text-align: center;
 }
 
 .task-container p,

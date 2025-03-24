@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const TaskSchema = new mongoose.Schema({
   titre: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   dateCreation: { type: Date, default: Date.now },
-  echeance: { type: Date, required: false },
+  echeance: { type: Date },
   statut: {
     type: String,
     enum: ["à faire", "en cours", "terminée", "annulée"],
@@ -20,8 +20,8 @@ const TaskSchema = new mongoose.Schema({
     prenom: String,
     email: String,
   },
-  categorie: { type: String, required: true },
-  etiquettes: { type: [String], default: [] },
+  categorie: String,
+  etiquettes: [String],
   sousTaches: [
     {
       titre: String,
@@ -31,7 +31,7 @@ const TaskSchema = new mongoose.Schema({
   ],
   commentaires: [
     {
-      auteur: { nom: String, prenom: String, email: String },
+      auteur: String,
       date: { type: Date, default: Date.now },
       contenu: String,
     },
