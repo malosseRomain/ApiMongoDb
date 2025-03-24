@@ -35,13 +35,23 @@ router.get("/", async (req, res) => {
 // 🟢 POST /tasks/:id/sous-tache - Ajouter une sous-tâche
 router.post("/:id/sous-tache", async (req, res) => {
   try {
+    const { titre, statut, echeance } = req.body;
+
+    // Validation des champs
+    if (!titre || !statut) {
+      return res
+        .status(400)
+        .json({ message: "Titre et statut sont requis pour une sous-tâche" });
+    }
+
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
 
-    task.sousTaches.push(req.body);
+    // Ajout de la sous-tâche à la tâche
+    task.sousTaches.push({ titre, statut, echeance: echeance || null });
     await task.save();
 
-    res.status(201).json(task);
+    res.status(201).json(task); // Retourner la tâche mise à jour
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -50,19 +60,27 @@ router.post("/:id/sous-tache", async (req, res) => {
 // 🟢 POST /tasks/:id/commentaire - Ajouter un commentaire
 router.post("/:id/commentaire", async (req, res) => {
   try {
+    const { auteur, contenu } = req.body;
+
+    // Validation des champs
+    if (!auteur || !contenu) {
+      return res
+        .status(400)
+        .json({ message: "Auteur et contenu sont requis pour un commentaire" });
+    }
+
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
 
-    task.commentaires.push(req.body);
+    // Ajout du commentaire à la tâche
+    task.commentaires.push({ auteur, contenu, date: new Date() });
     await task.save();
 
-    res.status(201).json(task);
+    res.status(201).json(task); // Retourner la tâche mise à jour
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-
-module.exports = router;
 
 // 🔍 GET /tasks/:id - Récupérer une tâche par ID
 router.get("/:id", async (req, res) => {

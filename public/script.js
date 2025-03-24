@@ -53,6 +53,7 @@ function viewTask(taskId) {
 }
 
 // 🔹 Ajouter ou Modifier une tâche
+// 🔹 Ajouter ou Modifier une tâche
 taskForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -73,18 +74,38 @@ taskForm.addEventListener("submit", async (e) => {
       .value.split(",")
       .map((e) => e.trim()),
     echeance: document.getElementById("echeance").value,
+
+    // Sous-tâches : collecter les sous-tâches sous forme de tableau d'objets
+    sousTaches: Array.from(document.querySelectorAll(".sous-tache")).map(
+      (input) => ({
+        titre: input.value.trim(),
+        statut: "à faire", // Par défaut, en attente
+        echeance: null, // Tu peux ajouter un champ échéance pour chaque sous-tâche si nécessaire
+      })
+    ),
+
+    // Commentaires : collecter les commentaires sous forme de tableau d'objets
+    commentaires: Array.from(document.querySelectorAll(".commentaire")).map(
+      (input) => ({
+        auteur: `${document.getElementById("auteurPrenom").value} ${
+          document.getElementById("auteurNom").value
+        }`,
+        contenu: input.value.trim(),
+        date: new Date().toISOString(),
+      })
+    ),
   };
 
+  // Vérifie si on est dans un mode de modification ou d'ajout
   if (taskId) {
     await fetch(`/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
-
-    delete taskForm.dataset.taskId;
+    delete taskForm.dataset.taskId; // Réinitialiser l'ID de la tâche modifiée
     document.querySelector("#taskForm button[type='submit']").textContent =
-      "Ajouter";
+      "Ajouter"; // Remettre le texte du bouton à "Ajouter"
   } else {
     await fetch("/tasks", {
       method: "POST",
@@ -93,8 +114,27 @@ taskForm.addEventListener("submit", async (e) => {
     });
   }
 
-  taskForm.reset();
-  fetchTasks(); // Recharge la liste
+  taskForm.reset(); // Réinitialiser le formulaire après soumission
+  fetchTasks(); // Recharger la liste des tâches
+});
+
+// 🔹 Ajouter une sous-tâche dynamiquement
+document.getElementById("ajouterSousTache").addEventListener("click", () => {
+  const container = document.getElementById("sousTachesContainer");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "sous-tache";
+  input.placeholder = "Nouvelle sous-tâche";
+  container.appendChild(input);
+});
+
+// 🔹 Ajouter un commentaire dynamiquement
+document.getElementById("ajouterCommentaire").addEventListener("click", () => {
+  const container = document.getElementById("commentairesContainer");
+  const input = document.createElement("textarea");
+  input.className = "commentaire";
+  input.placeholder = "Ajouter un commentaire...";
+  container.appendChild(input);
 });
 
 // 🔹 Modifier une tâche (remplit le formulaire)
