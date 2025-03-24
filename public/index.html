@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Tâches</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Gestion des Tâches</h1>
+
+    <!-- Formulaire pour ajouter une nouvelle tâche -->
+    <form id="taskForm">
+      <input type="text" id="titre" placeholder="Titre de la tâche" required />
+      <input type="text" id="description" placeholder="Description" />
+
+      <label for="echeance">Échéance :</label>
+      <input type="date" id="echeance" />
+
+      <label for="statut">Statut :</label>
+      <select id="statut">
+        <option value="à faire">À faire</option>
+        <option value="en cours">En cours</option>
+        <option value="terminée">Terminée</option>
+        <option value="annulée">Annulée</option>
+      </select>
+
+      <label for="priorite">Priorité :</label>
+      <select id="priorite">
+        <option value="basse">Basse</option>
+        <option value="moyenne">Moyenne</option>
+        <option value="haute">Haute</option>
+        <option value="critique">Critique</option>
+      </select>
+
+      <h3>Auteur</h3>
+      <input type="text" id="auteurNom" placeholder="Nom" required />
+      <input type="text" id="auteurPrenom" placeholder="Prénom" required />
+      <input type="email" id="auteurEmail" placeholder="Email" required />
+
+      <input type="text" id="categorie" placeholder="Catégorie" required />
+
+      <label for="etiquettes">Étiquettes (séparées par des virgules) :</label>
+      <input
+        type="text"
+        id="etiquettes"
+        placeholder="Ex: urgent, maison, travail"
+      />
+
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <!-- Liste des tâches -->
+    <h2>Liste des Tâches</h2>
+    <ul id="taskList"></ul>
+
+    <script src="script.js"></script>
+  </body>
+</html>
