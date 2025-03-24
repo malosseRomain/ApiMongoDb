@@ -120,3 +120,40 @@ li {
   list-style-type: square;
   padding-left: 20px;
 }
+
+h4 {
+  margin-top: 20px;
+  color: #007bff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+strong {
+  color: #555;
+}
+
+.btn-retour {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-retour:hover {
+  background-color: #0056b3;
+}

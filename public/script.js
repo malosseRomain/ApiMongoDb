@@ -1,11 +1,20 @@
 const taskList = document.getElementById("taskList");
 const taskForm = document.getElementById("taskForm");
 
-// 🔹 Récupérer les tâches et les afficher
+// 🔹 Charger les tâches au démarrage
+document.addEventListener("DOMContentLoaded", () => {
+  fetchTasks();
+});
+
+// 🔹 Fonction async pour récupérer les tâches et les afficher via displayTasks()
 async function fetchTasks() {
-  const response = await fetch("/tasks");
-  const tasks = await response.json();
-  displayTasks(tasks);
+  try {
+    const response = await fetch("/tasks");
+    const tasks = await response.json();
+    displayTasks(tasks);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des tâches :", err);
+  }
 }
 
 // 🔹 Afficher les tâches dans un tableau
@@ -14,23 +23,26 @@ function displayTasks(tasks) {
 
   tasks.forEach((task) => {
     const li = document.createElement("li");
+    li.classList.add("task-container");
+
+    // 📌 Formatage de la date d'échéance
+    let echeance = task.echeance
+      ? new Date(task.echeance).toLocaleDateString()
+      : "Aucune";
+
     li.innerHTML = `
-      <p class="task-header">${task.titre}</p>
-      <p class="task-status">${task.statut} - Priorité: ${
-      task.priorite || "Moyenne"
-    }</p>
+      <h3>${task.titre}</h3>
+      <p><strong>Auteur :</strong> ${task.auteur.prenom} ${task.auteur.nom}</p>
+      <p><strong>Échéance :</strong> ${echeance}</p>
+      <p><em>${task.statut} - Priorité: ${task.priorite}</em></p>
+
       <div class="task-buttons">
-        <button class="btn-green" onclick="viewTask('${
-          task._id
-        }')">Voir</button>
-        <button class="btn-green" onclick="editTask('${task._id}', '${
-      task.titre
-    }', '${task.statut}', '${task.priorite}')">Modifier</button>
-        <button class="btn-red" onclick="deleteTask('${
-          task._id
-        }')">Supprimer</button>
+        <button class="btn-green" onclick="viewTask('${task._id}')">Voir</button>
+        <button class="btn-green" onclick="editTask('${task._id}', '${task.titre}', '${task.statut}', '${task.priorite}')">Modifier</button>
+        <button class="btn-red" onclick="deleteTask('${task._id}')">Supprimer</button>
       </div>
     `;
+
     taskList.appendChild(li);
   });
 }
@@ -82,7 +94,7 @@ taskForm.addEventListener("submit", async (e) => {
   }
 
   taskForm.reset();
-  fetchTasks();
+  fetchTasks(); // Recharge la liste
 });
 
 // 🔹 Modifier une tâche (remplit le formulaire)
@@ -100,9 +112,9 @@ function editTask(id, titre, statut, priorite) {
 async function deleteTask(taskId) {
   if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
     await fetch(`/tasks/${taskId}`, { method: "DELETE" });
-    fetchTasks();
+    fetchTasks(); // Recharge la liste
   }
 }
 
-// Charger les tâches au démarrage
+// 🚀 Charger les tâches au démarrage
 fetchTasks();

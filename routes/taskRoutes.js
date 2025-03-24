@@ -3,17 +3,15 @@ const Task = require("../models/Task");
 
 const router = express.Router();
 
-// 🟢 GET /tasks - Récupérer toutes les tâches (avec filtres et tri)
+// 🟢 GET /tasks - Récupérer toutes les tâches avec filtres et tri
 router.get("/", async (req, res) => {
   try {
     let query = {};
 
-    // Filtrage
     if (req.query.statut) query.statut = req.query.statut;
     if (req.query.priorite) query.priorite = req.query.priorite;
     if (req.query.categorie) query.categorie = req.query.categorie;
     if (req.query.etiquette) query.etiquettes = req.query.etiquette;
-
     if (req.query.avant) query.echeance = { $lt: new Date(req.query.avant) };
     if (req.query.apres) query.echeance = { $gt: new Date(req.query.apres) };
 
@@ -23,11 +21,9 @@ router.get("/", async (req, res) => {
         { description: { $regex: req.query.q, $options: "i" } },
       ];
 
-    // Tri
     let sort = {};
-    if (req.query.tri) {
+    if (req.query.tri)
       sort[req.query.tri] = req.query.ordre === "desc" ? -1 : 1;
-    }
 
     const tasks = await Task.find(query).sort(sort);
     res.status(200).json(tasks);
@@ -36,11 +32,45 @@ router.get("/", async (req, res) => {
   }
 });
 
+// 🟢 POST /tasks/:id/sous-tache - Ajouter une sous-tâche
+router.post("/:id/sous-tache", async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
+
+    task.sousTaches.push(req.body);
+    await task.save();
+
+    res.status(201).json(task);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// 🟢 POST /tasks/:id/commentaire - Ajouter un commentaire
+router.post("/:id/commentaire", async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
+
+    task.commentaires.push(req.body);
+    await task.save();
+
+    res.status(201).json(task);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+module.exports = router;
+
 // 🔍 GET /tasks/:id - Récupérer une tâche par ID
 router.get("/:id", async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
+
+    console.log("Tâche récupérée :", JSON.stringify(task, null, 2)); // 🟢 Vérification console
     res.status(200).json(task);
   } catch (err) {
     res.status(500).json({ message: err.message });
