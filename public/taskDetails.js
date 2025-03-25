@@ -53,11 +53,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ? `<ul>${task.sousTaches
                         .map(
                           (sub) =>
-                            `<li>${sub.titre} - ${sub.statut} (Échéance: ${
+                            `<li>${sub.titre} - ${sub.statut}<br>
+                            Échéance: ${
                               sub.echeance
                                 ? new Date(sub.echeance).toLocaleDateString()
                                 : "Non définie"
-                            })</li>`
+                            }</li>`
                         )
                         .join("")}</ul>`
                     : "<p>Aucune sous-tâche</p>"
@@ -67,15 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ${
                   task.commentaires?.length
                     ? `<ul>${task.commentaires
-                        .map(
-                          (com) =>
-                            `<li><strong>${com.auteur?.prenom || "Inconnu"} ${
-                              com.auteur?.nom || ""
-                            }</strong> 
-                    (${new Date(com.date).toLocaleDateString()})<br>${
-                              com.contenu
-                            }</li>`
-                        )
+                        .map((com) => `<li>${com.contenu}</li>`)
                         .join("")}</ul>`
                     : "<p>Aucun commentaire</p>"
                 }
