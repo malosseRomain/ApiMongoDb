@@ -10,6 +10,10 @@ select,
 button {
   margin: 5px;
   padding: 8px;
+  width: 95%;
+}
+
+button {
   width: 100%;
 }
 
@@ -187,11 +191,18 @@ strong {
 
 #filterForm input,
 #filterForm select {
-  width: 100%;
   padding: 8px;
   margin-top: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+#filterForm input {
+  width: 95%;
+}
+
+#filterForm select {
+  width: 99%;
 }
 
 #applyFilter {
@@ -220,6 +231,7 @@ strong {
 #taskList {
   flex-grow: 1; /* Prend tout l'espace restant */
   max-width: 45vw;
+  background: white;
   border-radius: 10px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   list-style-type: none;
@@ -228,10 +240,11 @@ strong {
 /* 🎯 Menu des filtres (à droite) */
 #filterMenu {
   width: 35%; /* Largeur du menu */
+  background: white;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  display: none; /* Caché par défaut */
+  display: none;
 }
 
 /* 📱 Responsive Design */
