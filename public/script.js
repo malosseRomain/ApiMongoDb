@@ -72,7 +72,26 @@ function viewTask(taskId) {
   window.location.href = `taskDetails.html?id=${taskId}`;
 }
 
-// 🔹 Ajouter ou Modifier une tâche
+// 🔹 Réinitialiser complètement le formulaire après soumission
+function resetForm() {
+  taskForm.reset(); // Réinitialise les champs texte et sélection
+
+  // Vider les sous-tâches et commentaires
+  document.getElementById("sousTachesContainer").innerHTML = "";
+  document.getElementById("commentairesContainer").innerHTML = "";
+
+  // Supprimer l'ID de la tâche pour éviter d'écraser une tâche existante
+  delete taskForm.dataset.taskId;
+
+  // Remettre le bouton à "Ajouter"
+  document.querySelector("#taskForm button[type='submit']").textContent =
+    "Ajouter";
+
+  // Re-définir la date minimum pour éviter des dates passées
+  setMinDate();
+}
+
+// 🔹 Ajouter ou Modifier une tâche (avec reset après confirmation)
 taskForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -123,9 +142,6 @@ taskForm.addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
-    delete taskForm.dataset.taskId;
-    document.querySelector("#taskForm button[type='submit']").textContent =
-      "Ajouter";
   } else {
     await fetch("/tasks", {
       method: "POST",
@@ -134,8 +150,8 @@ taskForm.addEventListener("submit", async (e) => {
     });
   }
 
-  taskForm.reset();
-  fetchTasks();
+  resetForm(); // 🔹 Réinitialiser le formulaire après ajout ou modification
+  fetchTasks(); // Recharger la liste des tâches
 });
 
 // 🔹 Ajouter une sous-tâche dynamiquement avec priorité, échéance et statut
@@ -181,7 +197,7 @@ document.getElementById("ajouterCommentaire").addEventListener("click", () => {
   divComment.className = "commentaire-container";
 
   divComment.innerHTML = `
-    <textarea class="commentaire" placeholder="Ajouter un commentaire..."></textarea>
+    <input type="text" class="commentaire" placeholder="Ajouter un commentaire..."></input>
     <button type="button" class="supprimerCommentaire">❌</button>
   `;
 
@@ -195,17 +211,126 @@ document.getElementById("ajouterCommentaire").addEventListener("click", () => {
   container.appendChild(divComment);
 });
 
-// 🔹 Modifier une tâche (remplit le formulaire)
-function editTask(id, titre, statut, priorite) {
-  document.getElementById("titre").value = titre;
-  document.getElementById("statut").value = statut;
-  document.getElementById("priorite").value = priorite;
+// 🔹 Modifier une tâche (remplit le formulaire avec les données existantes)
+async function editTask(id) {
+  try {
+    const response = await fetch(`/tasks/${id}`);
+    const task = await response.json();
 
-  taskForm.dataset.taskId = id;
-  document.querySelector("#taskForm button[type='submit']").textContent =
-    "Mettre à jour";
+    // Remplir les champs du formulaire
+    document.getElementById("titre").value = task.titre;
+    document.getElementById("description").value = task.description || "";
+    document.getElementById("statut").value = task.statut;
+    document.getElementById("categorie").value = task.categorie || "";
+    document.getElementById("priorite").value = task.priorite;
+    document.getElementById("echeance").value = task.echeance
+      ? new Date(task.echeance).toISOString().split("T")[0]
+      : "";
 
-  setMinDate(); // S'assurer que les dates ne peuvent pas être passées
+    // Remplir les infos de l'auteur
+    document.getElementById("auteurNom").value = task.auteur?.nom || "";
+    document.getElementById("auteurPrenom").value = task.auteur?.prenom || "";
+    document.getElementById("auteurEmail").value = task.auteur?.email || "";
+
+    // Remplir les étiquettes
+    document.getElementById("etiquettes").value = task.etiquettes
+      ? task.etiquettes.join(", ")
+      : "";
+
+    // Supprimer les anciennes sous-tâches et commentaires affichés
+    document.getElementById("sousTachesContainer").innerHTML = "";
+    document.getElementById("commentairesContainer").innerHTML = "";
+
+    // Ajouter dynamiquement les sous-tâches
+    if (Array.isArray(task.sousTaches)) {
+      task.sousTaches.forEach((sousTache) => {
+        const today = new Date().toISOString().split("T")[0];
+
+        const sousTacheDiv = document.createElement("div");
+        sousTacheDiv.className = "sous-tache-container";
+
+        sousTacheDiv.innerHTML = `
+          <input type="text" class="sous-tache-titre" value="${
+            sousTache.titre
+          }">
+          <select class="sous-tache-priorite">
+            <option value="Basse" ${
+              sousTache.priorite === "Basse" ? "selected" : ""
+            }>Basse</option>
+            <option value="Moyenne" ${
+              sousTache.priorite === "Moyenne" ? "selected" : ""
+            }>Moyenne</option>
+            <option value="Haute" ${
+              sousTache.priorite === "Haute" ? "selected" : ""
+            }>Haute</option>
+            <option value="Critique" ${
+              sousTache.priorite === "Critique" ? "selected" : ""
+            }>Critique</option>
+          </select>
+          <select class="sous-tache-statut">
+            <option value="à faire" ${
+              sousTache.statut === "à faire" ? "selected" : ""
+            }>À faire</option>
+            <option value="en cours" ${
+              sousTache.statut === "en cours" ? "selected" : ""
+            }>En cours</option>
+            <option value="terminé" ${
+              sousTache.statut === "terminé" ? "selected" : ""
+            }>Terminé</option>
+          </select>
+          <input type="date" class="sous-tache-echeance" min="${today}" value="${
+          sousTache.echeance
+            ? new Date(sousTache.echeance).toISOString().split("T")[0]
+            : ""
+        }">
+          <button type="button" class="supprimerSousTache">❌</button>
+        `;
+
+        sousTacheDiv
+          .querySelector(".supprimerSousTache")
+          .addEventListener("click", () => {
+            sousTacheDiv.remove();
+          });
+
+        document
+          .getElementById("sousTachesContainer")
+          .appendChild(sousTacheDiv);
+      });
+    }
+
+    // Ajouter dynamiquement les commentaires
+    if (Array.isArray(task.commentaires)) {
+      task.commentaires.forEach((commentaire) => {
+        const divComment = document.createElement("div");
+        divComment.className = "commentaire-container";
+
+        divComment.innerHTML = `
+          <textarea class="commentaire">${commentaire.contenu}</textarea>
+          <button type="button" class="supprimerCommentaire">❌</button>
+        `;
+
+        divComment
+          .querySelector(".supprimerCommentaire")
+          .addEventListener("click", () => {
+            divComment.remove();
+          });
+
+        document
+          .getElementById("commentairesContainer")
+          .appendChild(divComment);
+      });
+    }
+
+    // Mettre l'ID de la tâche dans le formulaire pour la modification
+    taskForm.dataset.taskId = id;
+    document.querySelector("#taskForm button[type='submit']").textContent =
+      "Mettre à jour";
+
+    setMinDate(); // S'assurer que les dates ne peuvent pas être passées
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    console.error("Erreur lors de la récupération de la tâche :", err);
+  }
 }
 
 // 🔹 Supprimer une tâche
