@@ -99,11 +99,10 @@ li {
 
 .task-container {
   border: 1px solid #ccc;
-  padding: 15px;
   border-radius: 8px;
   background-color: #f9f9f9;
-  width: 60%;
   margin: auto;
+  margin-bottom: 20px;
 }
 
 .task-container h2 {
@@ -156,4 +155,95 @@ strong {
 
 .btn-retour:hover {
   background-color: #0056b3;
+}
+
+/* 🔹 Style du bouton pour afficher/cacher le menu */
+#toggleFilters {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#toggleFilters:hover {
+  background-color: #0056b3;
+}
+
+/* 🔹 Affichage du menu lorsqu'il est visible */
+#filterMenu.show {
+  display: block;
+}
+
+/* 🔹 Alignement des éléments */
+#filterForm label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#filterForm input,
+#filterForm select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#applyFilter {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+#applyFilter:hover {
+  background-color: #218838;
+}
+
+#container {
+  display: flex;
+  justify-content: space-between; /* Sépare les éléments à gauche et à droite */
+  align-items: flex-start; /* Aligne le haut des éléments */
+  margin-top: 20px;
+}
+
+/* 🎯 Liste des tâches (à gauche) */
+#taskList {
+  flex-grow: 1; /* Prend tout l'espace restant */
+  max-width: 45vw;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  list-style-type: none;
+}
+
+/* 🎯 Menu des filtres (à droite) */
+#filterMenu {
+  width: 35%; /* Largeur du menu */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  display: none; /* Caché par défaut */
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 1024px) {
+  #container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #taskList,
+  #filterMenu {
+    max-width: 90%;
+    width: 100%;
+  }
 }

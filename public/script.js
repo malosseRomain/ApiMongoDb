@@ -341,5 +341,52 @@ async function deleteTask(taskId) {
   }
 }
 
+document.getElementById("applyFilter").addEventListener("click", () => {
+  fetchTasks();
+});
+
+// 🔹 Modifier `fetchTasks()` pour inclure les filtres
+async function fetchTasks() {
+  try {
+    // Récupérer les valeurs des filtres
+    const statut = document.getElementById("filterStatut").value;
+    const priorite = document.getElementById("filterPriorite").value;
+    const categorie = document.getElementById("filterCategorie").value;
+    const etiquette = document.getElementById("filterEtiquette").value;
+    const echeanceAvant = document.getElementById("filterEcheance").value;
+    const tri = document.getElementById("sortBy").value;
+
+    // Construire l'URL des filtres
+    let url = "/tasks?";
+    if (statut) url += `statut=${encodeURIComponent(statut)}&`;
+    if (priorite) url += `priorite=${encodeURIComponent(priorite)}&`;
+    if (categorie) url += `categorie=${encodeURIComponent(categorie)}&`;
+    if (etiquette) url += `etiquette=${encodeURIComponent(etiquette)}&`;
+    if (echeanceAvant) url += `avant=${encodeURIComponent(echeanceAvant)}&`;
+    if (tri) url += `tri=${encodeURIComponent(tri)}&ordre=asc`; // Ordre par défaut ascendant
+
+    // Appel API avec les filtres
+    const response = await fetch(url);
+    const tasks = await response.json();
+
+    // Afficher les tâches
+    displayTasks(tasks);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des tâches :", err);
+  }
+}
+
+// 🔹 Toggle (montrer/cacher) le menu des filtres
+document.getElementById("toggleFilters").addEventListener("click", function () {
+  const menu = document.getElementById("filterMenu");
+  if (menu.classList.contains("show")) {
+    menu.classList.remove("show");
+    this.textContent = "🔍 Afficher les filtres";
+  } else {
+    menu.classList.add("show");
+    this.textContent = "❌ Masquer les filtres";
+  }
+});
+
 // 🚀 Charger les tâches au démarrage
 fetchTasks();

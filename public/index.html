@@ -62,9 +62,58 @@
       <button type="submit">Ajouter</button>
     </form>
 
-    <!-- Liste des tâches -->
     <h2 style="margin-top: 30vh">Liste des Tâches</h2>
-    <ul id="taskList"></ul>
+
+    <!-- Bouton pour afficher/cacher le menu -->
+    <button id="toggleFilters">🔍 Afficher les filtres</button>
+
+    <div id="container">
+      <!-- 📌 Liste des tâches (à gauche) -->
+      <ul id="taskList"></ul>
+
+      <!-- 📌 Filtres (à droite) -->
+      <div id="filterMenu">
+        <h2>Filtres</h2>
+        <form id="filterForm">
+          <label for="filterStatut">Statut :</label>
+          <select id="filterStatut">
+            <option value="">Tous</option>
+            <option value="à faire">À faire</option>
+            <option value="en cours">En cours</option>
+            <option value="terminée">Terminée</option>
+            <option value="annulée">Annulée</option>
+          </select>
+
+          <label for="filterPriorite">Priorité :</label>
+          <select id="filterPriorite">
+            <option value="">Toutes</option>
+            <option value="basse">Basse</option>
+            <option value="moyenne">Moyenne</option>
+            <option value="haute">Haute</option>
+            <option value="critique">Critique</option>
+          </select>
+
+          <label for="filterCategorie">Catégorie :</label>
+          <input type="text" id="filterCategorie" placeholder="Ex: Travail" />
+
+          <label for="filterEtiquette">Étiquette :</label>
+          <input type="text" id="filterEtiquette" placeholder="Ex: urgent" />
+
+          <label for="filterEcheance">Échéance avant :</label>
+          <input type="date" id="filterEcheance" />
+
+          <label for="sortBy">Trier par :</label>
+          <select id="sortBy">
+            <option value="">Par défaut</option>
+            <option value="echeance">Échéance</option>
+            <option value="priorite">Priorité</option>
+            <option value="dateCreation">Date de création</option>
+          </select>
+
+          <button type="button" id="applyFilter">Filtrer</button>
+        </form>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
