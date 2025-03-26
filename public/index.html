@@ -75,6 +75,7 @@
       <div id="filterMenu">
         <h2>Filtres</h2>
         <form id="filterForm">
+          <!-- Statut -->
           <label for="filterStatut">Statut :</label>
           <select id="filterStatut">
             <option value="">Tous</option>
@@ -84,6 +85,7 @@
             <option value="annulée">Annulée</option>
           </select>
 
+          <!-- Priorité -->
           <label for="filterPriorite">Priorité :</label>
           <select id="filterPriorite">
             <option value="">Toutes</option>
@@ -93,23 +95,43 @@
             <option value="critique">Critique</option>
           </select>
 
+          <!-- Catégorie -->
           <label for="filterCategorie">Catégorie :</label>
           <input type="text" id="filterCategorie" placeholder="Ex: Travail" />
 
+          <!-- Étiquette -->
           <label for="filterEtiquette">Étiquette :</label>
           <input type="text" id="filterEtiquette" placeholder="Ex: urgent" />
 
+          <!-- Échéance avant -->
           <label for="filterEcheance">Échéance avant :</label>
           <input type="date" id="filterEcheance" />
 
-          <label for="sortBy">Trier par :</label>
-          <select id="sortBy">
-            <option value="">Par défaut</option>
-            <option value="echeance">Échéance</option>
-            <option value="priorite">Priorité</option>
-            <option value="dateCreation">Date de création</option>
-          </select>
+          <!-- Échéance après -->
+          <label for="filterApres">Échéance après :</label>
+          <input type="date" id="filterApres" />
 
+          <!-- Recherche texte libre -->
+          <label for="filterRecherche">Recherche :</label>
+          <input
+            type="text"
+            id="filterRecherche"
+            placeholder="Rechercher une tâche..."
+          />
+
+          <!-- Tri -->
+          <div class="sort-container">
+            <label for="sortBy">Trier par :</label>
+            <select id="sortBy">
+              <option value="">Par défaut</option>
+              <option value="echeance">Échéance</option>
+              <option value="priorite">Priorité</option>
+              <option value="dateCreation">Date de création</option>
+            </select>
+            <button id="sortOrder" class="sort-btn">⬆️</button>
+          </div>
+
+          <!-- Bouton de filtre -->
           <button type="button" id="applyFilter">Filtrer</button>
         </form>
       </div>

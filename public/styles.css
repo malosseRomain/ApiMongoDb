@@ -260,3 +260,23 @@ strong {
     width: 100%;
   }
 }
+
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espace entre le select et le bouton */
+}
+
+.sort-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.sort-btn:hover {
+  background-color: #0056b3;
+}

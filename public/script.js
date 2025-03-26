@@ -5,7 +5,84 @@ const taskForm = document.getElementById("taskForm");
 document.addEventListener("DOMContentLoaded", () => {
   fetchTasks();
   setMinDate(); // Définir la date min à l'ouverture de la page
+
+  const sortBySelect = document.getElementById("sortBy");
+  const sortOrderBtn = document.getElementById("sortOrder");
+  let isAscending = true; // Par défaut, tri croissant
+
+  // Fonction pour trier et mettre à jour l'affichage
+  function sortTasks() {
+    const tasks = Array.from(document.querySelectorAll("#taskList li")); // Récupère toutes les tâches
+    const sortBy = sortBySelect.value; // Critère de tri
+    const order = isAscending ? 1 : -1; // Détermine l'ordre du tri
+
+    tasks.sort((a, b) => {
+      let valueA, valueB;
+
+      switch (sortBy) {
+        case "echeance":
+          valueA = new Date(a.dataset.echeance || "9999-12-31");
+          valueB = new Date(b.dataset.echeance || "9999-12-31");
+          break;
+        case "priorite":
+          const priorities = { basse: 1, moyenne: 2, haute: 3, critique: 4 };
+          valueA = priorities[a.dataset.priorite] || 0;
+          valueB = priorities[b.dataset.priorite] || 0;
+          break;
+        case "dateCreation":
+          valueA = new Date(a.dataset.dateCreation || "9999-12-31");
+          valueB = new Date(b.dataset.dateCreation || "9999-12-31");
+          break;
+        default:
+          return 0;
+      }
+
+      return (valueA > valueB ? 1 : -1) * order;
+    });
+
+    // Réinsère les tâches triées dans la liste
+    const taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
+    tasks.forEach((task) => taskList.appendChild(task));
+  }
+
+  // Changement d'ordre croissant/décroissant
+  sortOrderBtn.addEventListener("click", () => {
+    isAscending = !isAscending; // Inverse l'ordre du tri
+    sortOrderBtn.textContent = isAscending ? "⬆️" : "⬇️"; // Change l'icône
+    sortTasks(); // Applique le tri
+  });
+
+  // Tri lorsqu'on change le critère
+  sortBySelect.addEventListener("change", sortTasks);
 });
+
+// Fonction pour charger les tâches (exemple de base, à adapter selon ton stockage)
+function fetchTasks() {
+  // Exemple : Simulation de récupération des tâches depuis un stockage local ou une API
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const taskList = document.getElementById("taskList");
+
+  taskList.innerHTML = ""; // Nettoyer avant d'afficher
+
+  tasks.forEach((task) => {
+    const li = document.createElement("li");
+    li.textContent = `${task.titre} - ${task.priorite} - ${task.echeance}`;
+    li.dataset.echeance = task.echeance;
+    li.dataset.priorite = task.priorite;
+    li.dataset.dateCreation = task.dateCreation;
+    taskList.appendChild(li);
+  });
+}
+
+// Fonction pour définir la date minimale de l'échéance (exemple)
+function setMinDate() {
+  const dateInput = document.getElementById("echeance");
+  if (dateInput) {
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("min", today);
+  }
+}
 
 // 🔹 Fonction pour définir la date minimum sur les champs de date
 function setMinDate() {
@@ -340,33 +417,53 @@ async function deleteTask(taskId) {
     fetchTasks();
   }
 }
-
-document.getElementById("applyFilter").addEventListener("click", () => {
-  fetchTasks();
-});
-
 // 🔹 Modifier `fetchTasks()` pour inclure les filtres
 async function fetchTasks() {
   try {
     // Récupérer les valeurs des filtres
-    const statut = document.getElementById("filterStatut").value;
-    const priorite = document.getElementById("filterPriorite").value;
-    const categorie = document.getElementById("filterCategorie").value;
-    const etiquette = document.getElementById("filterEtiquette").value;
-    const echeanceAvant = document.getElementById("filterEcheance").value;
-    const tri = document.getElementById("sortBy").value;
+    const statut = document.getElementById("filterStatut").value || "";
+    const priorite = document.getElementById("filterPriorite").value || "";
+    const categorie = document.getElementById("filterCategorie").value.trim();
+    const etiquette = document.getElementById("filterEtiquette").value.trim();
+    const recherche = document.getElementById("filterRecherche").value.trim();
+    const tri = document.getElementById("sortBy").value || "";
+    const ordre = isAscending ? "asc" : "desc";
+
+    // Gérer l'échéance avant (exclusif)
+    let echeanceAvant = document.getElementById("filterEcheance").value;
+    if (echeanceAvant) {
+      let date = new Date(echeanceAvant);
+      date.setDate(date.getDate() - 1); // Exclure la date sélectionnée
+      echeanceAvant = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+    }
+
+    // Gérer l'échéance après (exclusif)
+    let echeanceApres = document.getElementById("filterApres").value;
+    if (echeanceApres) {
+      let date = new Date(echeanceApres);
+      date.setDate(date.getDate() + 1); // Exclure la date sélectionnée
+      echeanceApres = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+    }
 
     // Construire l'URL des filtres
-    let url = "/tasks?";
-    if (statut) url += `statut=${encodeURIComponent(statut)}&`;
-    if (priorite) url += `priorite=${encodeURIComponent(priorite)}&`;
-    if (categorie) url += `categorie=${encodeURIComponent(categorie)}&`;
-    if (etiquette) url += `etiquette=${encodeURIComponent(etiquette)}&`;
-    if (echeanceAvant) url += `avant=${encodeURIComponent(echeanceAvant)}&`;
-    if (tri) url += `tri=${encodeURIComponent(tri)}&ordre=asc`; // Ordre par défaut ascendant
+    let params = new URLSearchParams();
+    if (statut) params.append("statut", statut);
+    if (priorite) params.append("priorite", priorite);
+    if (categorie) params.append("categorie", categorie);
+    if (etiquette) params.append("etiquette", etiquette);
+    if (recherche) params.append("q", recherche);
+    if (echeanceAvant) params.append("avant", echeanceAvant); // Avant exclusif
+    if (echeanceApres) params.append("apres", echeanceApres); // Après exclusif
+    if (tri) {
+      params.append("tri", tri);
+      params.append("ordre", ordre);
+    }
+
+    const url = `/tasks?${params.toString()}`;
 
     // Appel API avec les filtres
     const response = await fetch(url);
+    if (!response.ok) throw new Error("Erreur serveur");
     const tasks = await response.json();
 
     // Afficher les tâches
@@ -375,6 +472,23 @@ async function fetchTasks() {
     console.error("Erreur lors de la récupération des tâches :", err);
   }
 }
+
+// 🎯 Appliquer le filtrage quand on clique sur "Filtrer"
+document.getElementById("applyFilter").addEventListener("click", (e) => {
+  e.preventDefault(); // Empêcher tout rechargement involontaire
+  fetchTasks();
+});
+
+// 🔄 Gestion du tri et rechargement des tâches
+let isAscending = true;
+document.getElementById("sortOrder").addEventListener("click", (e) => {
+  e.preventDefault();
+  isAscending = !isAscending; // Inverser l'ordre du tri
+  fetchTasks(); // Rafraîchir les tâches avec le nouvel ordre
+
+  // Mettre à jour l'icône du bouton
+  document.getElementById("sortOrder").textContent = isAscending ? "⬆️" : "⬇️";
+});
 
 // 🔹 Toggle (montrer/cacher) le menu des filtres
 document.getElementById("toggleFilters").addEventListener("click", function () {
