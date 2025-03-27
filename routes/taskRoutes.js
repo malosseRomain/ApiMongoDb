@@ -86,17 +86,34 @@ router.post("/", async (req, res) => {
 // ✏️ PUT /tasks/:id - Modifier une tâche existante
 router.put("/:id", async (req, res) => {
   try {
+    const { titre, description, statut, priorite, auteur } = req.body;
+
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
 
-    // Mettre à jour la tâche
-    const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    // Création d'un objet historique de modification
+    const modification = {
+      date: new Date(),
+      modifiePar: auteur?.nom || "Utilisateur inconnu",
+      changements: `Modifications : ${titre ? "titre=" + titre : ""} ${
+        statut ? "statut=" + statut : ""
+      } ${priorite ? "priorite=" + priorite : ""}`.trim(),
+    };
+
+    // Mise à jour des champs, sans écraser l'historique
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { titre, description, statut, priorite },
+        $push: { historiqueModifications: modification }, // Ajout à l'historique
+      },
+      { new: true }
+    );
 
     res.status(200).json(updatedTask);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Erreur lors de la mise à jour :", err);
+    res.status(500).json({ message: "Erreur serveur", error: err.message });
   }
 });
 
