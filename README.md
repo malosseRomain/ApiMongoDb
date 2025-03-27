@@ -33,7 +33,7 @@ Créer un fichier `.env` à la racine du projet et y ajouter :
 
 ```env
 MONGO_URI=mongodb://localhost:27017/nom_de_la_base
-PORT=3000
+PORT=5 000
 ```
 
 Remplace `nom_de_la_base` par le nom souhaité pour ta base de données MongoDB.
@@ -43,10 +43,10 @@ Remplace `nom_de_la_base` par le nom souhaité pour ta base de données MongoDB.
 Démarrer l’API en exécutant :
 
 ```sh
-npm start
+"npm start" ou "node server.js"
 ```
 
-L'API sera disponible sur `http://localhost:3000`.
+L'API sera disponible sur `http://localhost:5000`.
 
 ## Documentation API
 
@@ -65,13 +65,7 @@ L'API sera disponible sur `http://localhost:3000`.
 #### Récupérer toutes les tâches
 
 ```sh
-curl -X GET http://localhost:3000/tasks
-```
-
-#### Ajouter une tâche
-
-```sh
-curl -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d '{"titre": "Nouvelle tâche", "statut": "à faire"}'
+curl -X GET http://localhost:5000/tasks
 ```
 
 ## Mode d’emploi
@@ -84,11 +78,3 @@ curl -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d 
   - `?priorite=haute` → Filtrer par priorité
   - `?categorie=travail` → Filtrer par catégorie
   - `?q=rapport` → Recherche dans titre et description
-
-## Contribution
-
-Les contributions sont les bienvenues ! Ouvre une issue ou une pull request sur le repo GitHub.
-
-## Licence
-
-Ce projet est sous licence ISC.
