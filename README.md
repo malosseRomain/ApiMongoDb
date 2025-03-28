@@ -6,6 +6,10 @@ Projet de nouveaux paradigmes de base de données
 
 ApiMongoDb est une API REST utilisant MongoDB comme base de données NoSQL. Elle permet de stocker, manipuler et récupérer des données de manière flexible. L'API est développée avec Express.js et utilise Mongoose pour l'interaction avec MongoDB.
 
+## Remarque
+
+Pour ajouter des commentaires ou des sous-tâches, il faut cliquer sur 'Modifier la tâche' depuis la liste des tâches.
+
 ## Prérequis
 
 - Node.js (version 16 ou supérieure)
