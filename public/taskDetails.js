@@ -24,17 +24,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       : "Auteur inconnu";
 
     // Construction de l'affichage de l'historique des modifications
-    const historiqueHTML = task.historique?.length
-      ? `<ul>${task.historique
-          .map(
-            (hist) =>
-              `<li><strong>${hist.champ} :</strong> 
-              ${JSON.stringify(hist.ancienneValeur) || "-"} ➝ 
-              ${JSON.stringify(hist.nouvelleValeur) || "-"} 
-              (${new Date(hist.dateModification).toLocaleDateString()})</li>`
-          )
-          .join("")}</ul>`
-      : "<p>Aucune modification</p>";
+    const historiqueHTML = task.historiqueModifications?.length
+      ? `<ul>${[
+          ...new Set(
+            task.historiqueModifications.map(
+              (hist) =>
+                `<li><strong>${hist.champModifie} :</strong> 
+        <span style="color:red;">
+          ${hist.ancienneValeur ?? "-"}
+          <span style="color:black;"> ➝ </span> 
+          <span style="color:green;">${hist.nouvelleValeur ?? "-"}</span>
+        </span><br>
+        <em style="font-size: 0.9em; color: gray;">(${new Date(
+          hist.date
+        ).toLocaleString()})</em></li>`
+            )
+          ),
+        ].join("")}</ul>`
+      : "<p>Aucune modification enregistrée</p>";
 
     // Construction de l'affichage principal
     document.getElementById("taskDetails").innerHTML = `

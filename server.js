@@ -7,14 +7,14 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 🔹 Middleware
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// 📌 Servir les fichiers statiques (HTML, CSS, JS)
+// Servir les fichiers statiques (HTML, CSS, JS)
 app.use(express.static("public"));
 
-// 🔹 Connexion à MongoDB
+// Connexion à MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -26,16 +26,16 @@ mongoose
     process.exit(1); // Stoppe le serveur en cas d'erreur critique
   });
 
-// 🔹 Routes API
+// Routes API
 const taskRoutes = require("./routes/taskRoutes");
 app.use("/tasks", taskRoutes);
 
-// 🔹 Route par défaut (Gestion des erreurs 404)
+// Route par défaut (Gestion des erreurs 404)
 app.use((req, res) => {
-  res.status(404).json({ message: "❌ Route non trouvée" });
+  res.status(404).json({ message: "Route non trouvée" });
 });
 
-// 🔹 Démarrer le serveur
+// Démarrer le serveur
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
+  console.log(`Serveur lancé sur http://localhost:${PORT}`);
 });

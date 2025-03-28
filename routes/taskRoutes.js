@@ -3,7 +3,7 @@ const Task = require("../models/Task");
 
 const router = express.Router();
 
-// 🟢 GET /tasks - Récupérer toutes les tâches avec filtres et tri
+// GET /tasks - Récupérer toutes les tâches avec filtres et tri
 router.get("/", async (req, res) => {
   try {
     let query = {};
@@ -60,7 +60,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 🟢 GET /tasks/:id - Récupérer une tâche par ID
+// GET /tasks/:id - Récupérer une tâche par ID
 router.get("/:id", async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -72,7 +72,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ➕ POST /tasks - Ajouter une nouvelle tâche
+// POST /tasks - Ajouter une nouvelle tâche
 router.post("/", async (req, res) => {
   try {
     const newTask = new Task(req.body);
@@ -83,29 +83,64 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✏️ PUT /tasks/:id - Modifier une tâche existante
+// PUT /tasks/:id - Modifier une tâche existante
 router.put("/:id", async (req, res) => {
   try {
     const { titre, description, statut, priorite, auteur } = req.body;
 
+    // Vérifier si la tâche existe
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
 
-    // Création d'un objet historique de modification
-    const modification = {
-      date: new Date(),
-      modifiePar: auteur?.nom || "Utilisateur inconnu",
-      changements: `Modifications : ${titre ? "titre=" + titre : ""} ${
-        statut ? "statut=" + statut : ""
-      } ${priorite ? "priorite=" + priorite : ""}`.trim(),
-    };
+    let modifications = [];
 
-    // Mise à jour des champs, sans écraser l'historique
+    // Comparer les valeurs et ajouter à l'historique si elles ont changé
+    if (titre && titre !== task.titre) {
+      modifications.push({
+        champModifie: "titre",
+        ancienneValeur: task.titre,
+        nouvelleValeur: titre,
+        date: new Date(),
+      });
+    }
+    if (description && description !== task.description) {
+      modifications.push({
+        champModifie: "description",
+        ancienneValeur: task.description,
+        nouvelleValeur: description,
+        date: new Date(),
+      });
+    }
+    if (statut && statut !== task.statut) {
+      modifications.push({
+        champModifie: "statut",
+        ancienneValeur: task.statut,
+        nouvelleValeur: statut,
+        date: new Date(),
+      });
+    }
+    if (priorite && priorite !== task.priorite) {
+      modifications.push({
+        champModifie: "priorite",
+        ancienneValeur: task.priorite,
+        nouvelleValeur: priorite,
+        date: new Date(),
+      });
+    }
+
+    // Construire l'objet de mise à jour
+    const updateFields = {};
+    if (titre) updateFields.titre = titre;
+    if (description) updateFields.description = description;
+    if (statut) updateFields.statut = statut;
+    if (priorite) updateFields.priorite = priorite;
+
+    // Appliquer les mises à jour et ajouter l'historique
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
       {
-        $set: { titre, description, statut, priorite },
-        $push: { historiqueModifications: modification }, // Ajout à l'historique
+        $set: updateFields,
+        $push: { historiqueModifications: { $each: modifications } },
       },
       { new: true }
     );
@@ -117,7 +152,9 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// ❌ DELETE /tasks/:id - Supprimer une tâche
+module.exports = router;
+
+// DELETE /tasks/:id - Supprimer une tâche
 router.delete("/:id", async (req, res) => {
   try {
     const deletedTask = await Task.findByIdAndDelete(req.params.id);
@@ -129,7 +166,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// 📝 Ajout des sous-tâches
+// Ajout des sous-tâches
 router.post("/:id/sous-tache", async (req, res) => {
   try {
     const { titre, statut, echeance } = req.body;
@@ -149,7 +186,7 @@ router.post("/:id/sous-tache", async (req, res) => {
   }
 });
 
-// 📝 Ajout des commentaires
+// Ajout des commentaires
 router.post("/:id/commentaire", async (req, res) => {
   try {
     const { auteur, contenu } = req.body;
@@ -169,7 +206,7 @@ router.post("/:id/commentaire", async (req, res) => {
   }
 });
 
-// 🕒 Récupérer l'historique des modifications
+// Récupérer l'historique des modifications
 router.get("/:id/historique", async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);

@@ -1,7 +1,7 @@
 const taskList = document.getElementById("taskList");
 const taskForm = document.getElementById("taskForm");
 
-// 🔹 Charger les tâches au démarrage
+// Charger les tâches au démarrage
 document.addEventListener("DOMContentLoaded", () => {
   fetchTasks();
   setMinDate(); // Définir la date min à l'ouverture de la page
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fonction pour trier et mettre à jour l'affichage
   function sortTasks() {
     const tasks = Array.from(document.querySelectorAll("#taskList li")); // Récupère toutes les tâches
-    const sortBy = sortBySelect.value; // Critère de tri
+    const sortBy = sortBySelect.value;
     const order = isAscending ? 1 : -1; // Détermine l'ordre du tri
 
     tasks.sort((a, b) => {
@@ -48,34 +48,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Changement d'ordre croissant/décroissant
   sortOrderBtn.addEventListener("click", () => {
-    isAscending = !isAscending; // Inverse l'ordre du tri
-    sortOrderBtn.textContent = isAscending ? "⬆️" : "⬇️"; // Change l'icône
-    sortTasks(); // Applique le tri
+    isAscending = !isAscending;
+    sortOrderBtn.textContent = isAscending ? "⬆️" : "⬇️";
+    sortTasks();
   });
 
   // Tri lorsqu'on change le critère
   sortBySelect.addEventListener("change", sortTasks);
 });
 
-// Fonction pour charger les tâches (exemple de base, à adapter selon ton stockage)
-function fetchTasks() {
-  // Exemple : Simulation de récupération des tâches depuis un stockage local ou une API
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  const taskList = document.getElementById("taskList");
-
-  taskList.innerHTML = ""; // Nettoyer avant d'afficher
-
-  tasks.forEach((task) => {
-    const li = document.createElement("li");
-    li.textContent = `${task.titre} - ${task.priorite} - ${task.echeance}`;
-    li.dataset.echeance = task.echeance;
-    li.dataset.priorite = task.priorite;
-    li.dataset.dateCreation = task.dateCreation;
-    taskList.appendChild(li);
-  });
-}
-
-// Fonction pour définir la date minimale de l'échéance (exemple)
+// Fonction pour définir la date minimale de l'échéance
 function setMinDate() {
   const dateInput = document.getElementById("echeance");
   if (dateInput) {
@@ -84,17 +66,17 @@ function setMinDate() {
   }
 }
 
-// 🔹 Fonction pour définir la date minimum sur les champs de date
+// Fonction pour définir la date minimum sur les champs de date
 function setMinDate() {
-  const today = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
-  document.getElementById("echeance").min = today; // Échéance principale
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("echeance").min = today;
 
   document.querySelectorAll(".sous-tache-echeance").forEach((input) => {
     input.min = today;
   });
 }
 
-// 🔹 Fonction async pour récupérer les tâches et les afficher via displayTasks()
+// Fonction async pour récupérer les tâches et les afficher via displayTasks()
 async function fetchTasks() {
   try {
     const response = await fetch("/tasks");
@@ -105,7 +87,7 @@ async function fetchTasks() {
   }
 }
 
-// 🔹 Afficher les tâches dans un tableau
+// Afficher les tâches dans un tableau
 function displayTasks(tasks) {
   taskList.innerHTML = ""; // Vider la liste avant d'ajouter les tâches
 
@@ -144,12 +126,12 @@ function displayTasks(tasks) {
   });
 }
 
-// 🔹 Voir les détails d'une tâche
+// Voir les détails d'une tâche
 function viewTask(taskId) {
   window.location.href = `taskDetails.html?id=${taskId}`;
 }
 
-// 🔹 Réinitialiser complètement le formulaire après soumission
+// Réinitialiser complètement le formulaire après soumission
 function resetForm() {
   taskForm.reset(); // Réinitialise les champs texte et sélection
 
@@ -168,7 +150,7 @@ function resetForm() {
   setMinDate();
 }
 
-// 🔹 Ajouter ou Modifier une tâche (avec reset après confirmation)
+// Ajouter ou Modifier une tâche
 taskForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -227,11 +209,11 @@ taskForm.addEventListener("submit", async (e) => {
     });
   }
 
-  resetForm(); // 🔹 Réinitialiser le formulaire après ajout ou modification
+  resetForm(); // Réinitialiser le formulaire après ajout ou modification
   fetchTasks(); // Recharger la liste des tâches
 });
 
-// 🔹 Ajouter une sous-tâche dynamiquement avec priorité, échéance et statut
+// Ajouter une sous-tâche dynamiquement avec priorité, échéance et statut
 document.getElementById("ajouterSousTache").addEventListener("click", () => {
   const container = document.getElementById("sousTachesContainer");
   const today = new Date().toISOString().split("T")[0]; // Date actuelle
@@ -266,7 +248,7 @@ document.getElementById("ajouterSousTache").addEventListener("click", () => {
   container.appendChild(sousTacheDiv);
 });
 
-// 🔹 Ajouter un commentaire dynamiquement avec un bouton de suppression
+// Ajouter un commentaire dynamiquement avec un bouton de suppression
 document.getElementById("ajouterCommentaire").addEventListener("click", () => {
   const container = document.getElementById("commentairesContainer");
 
@@ -288,7 +270,7 @@ document.getElementById("ajouterCommentaire").addEventListener("click", () => {
   container.appendChild(divComment);
 });
 
-// 🔹 Modifier une tâche (remplit le formulaire avec les données existantes)
+// Modifier une tâche (remplit le formulaire avec les données existantes)
 async function editTask(id) {
   try {
     const response = await fetch(`/tasks/${id}`);
@@ -410,14 +392,79 @@ async function editTask(id) {
   }
 }
 
-// 🔹 Supprimer une tâche
+// Supprimer une tâche
 async function deleteTask(taskId) {
   if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
     await fetch(`/tasks/${taskId}`, { method: "DELETE" });
     fetchTasks();
   }
 }
-// 🔹 Modifier `fetchTasks()` pour inclure les filtres
+
+async function updateTask(event) {
+  event.preventDefault(); // Empêche le rechargement de la page
+
+  const taskId = taskForm.dataset.taskId; // Récupère l'ID de la tâche en cours d'édition
+
+  // Construire l'objet de la tâche modifiée
+  const updatedTask = {
+    titre: document.getElementById("titre").value,
+    description: document.getElementById("description").value,
+    statut: document.getElementById("statut").value,
+    categorie: document.getElementById("categorie").value,
+    priorite: document.getElementById("priorite").value,
+    echeance: document.getElementById("echeance").value
+      ? new Date(document.getElementById("echeance").value).toISOString()
+      : null,
+    auteur: {
+      nom: document.getElementById("auteurNom").value,
+      prenom: document.getElementById("auteurPrenom").value,
+      email: document.getElementById("auteurEmail").value,
+    },
+    etiquettes: document.getElementById("etiquettes").value
+      ? document
+          .getElementById("etiquettes")
+          .value.split(",")
+          .map((e) => e.trim())
+      : [],
+    sousTaches: [...document.querySelectorAll(".sous-tache-container")].map(
+      (st) => ({
+        titre: st.querySelector(".sous-tache-titre").value,
+        statut: st.querySelector(".sous-tache-statut").value,
+        echeance: st.querySelector(".sous-tache-echeance").value
+          ? new Date(
+              st.querySelector(".sous-tache-echeance").value
+            ).toISOString()
+          : null,
+      })
+    ),
+    commentaires: [...document.querySelectorAll(".commentaire-container")].map(
+      (c) => ({
+        auteur: "Utilisateur",
+        contenu: c.querySelector(".commentaire").value,
+      })
+    ),
+  };
+
+  try {
+    const response = await fetch(`/tasks/${taskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedTask),
+    });
+
+    if (!response.ok) throw new Error("Erreur lors de la mise à jour");
+
+    alert("Tâche mise à jour avec succès !");
+    fetchTasks();
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour :", err);
+  }
+}
+
+document.getElementById("taskForm").addEventListener("submit", updateTask);
+
 async function fetchTasks() {
   try {
     // Récupérer les valeurs des filtres
@@ -429,20 +476,20 @@ async function fetchTasks() {
     const tri = document.getElementById("sortBy").value || "";
     const ordre = isAscending ? "asc" : "desc";
 
-    // Gérer l'échéance avant (exclusif)
+    // échéance avant
     let echeanceAvant = document.getElementById("filterEcheance").value;
     if (echeanceAvant) {
       let date = new Date(echeanceAvant);
-      date.setDate(date.getDate() - 1); // Exclure la date sélectionnée
-      echeanceAvant = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+      date.setDate(date.getDate() - 1);
+      echeanceAvant = date.toISOString().split("T")[0];
     }
 
-    // Gérer l'échéance après (exclusif)
+    // échéance après
     let echeanceApres = document.getElementById("filterApres").value;
     if (echeanceApres) {
       let date = new Date(echeanceApres);
-      date.setDate(date.getDate() + 1); // Exclure la date sélectionnée
-      echeanceApres = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+      date.setDate(date.getDate() + 1);
+      echeanceApres = date.toISOString().split("T")[0];
     }
 
     // Construire l'URL des filtres
@@ -452,8 +499,8 @@ async function fetchTasks() {
     if (categorie) params.append("categorie", categorie);
     if (etiquette) params.append("etiquette", etiquette);
     if (recherche) params.append("q", recherche);
-    if (echeanceAvant) params.append("avant", echeanceAvant); // Avant exclusif
-    if (echeanceApres) params.append("apres", echeanceApres); // Après exclusif
+    if (echeanceAvant) params.append("avant", echeanceAvant);
+    if (echeanceApres) params.append("apres", echeanceApres);
     if (tri) {
       params.append("tri", tri);
       params.append("ordre", ordre);
@@ -466,31 +513,29 @@ async function fetchTasks() {
     if (!response.ok) throw new Error("Erreur serveur");
     const tasks = await response.json();
 
-    // Afficher les tâches
     displayTasks(tasks);
   } catch (err) {
     console.error("Erreur lors de la récupération des tâches :", err);
   }
 }
 
-// 🎯 Appliquer le filtrage quand on clique sur "Filtrer"
+// Appliquer le filtrage quand on clique sur "Filtrer"
 document.getElementById("applyFilter").addEventListener("click", (e) => {
-  e.preventDefault(); // Empêcher tout rechargement involontaire
+  e.preventDefault();
   fetchTasks();
 });
 
-// 🔄 Gestion du tri et rechargement des tâches
+// Gestion du tri et rechargement des tâches
 let isAscending = true;
 document.getElementById("sortOrder").addEventListener("click", (e) => {
   e.preventDefault();
-  isAscending = !isAscending; // Inverser l'ordre du tri
+  isAscending = !isAscending;
   fetchTasks(); // Rafraîchir les tâches avec le nouvel ordre
 
-  // Mettre à jour l'icône du bouton
   document.getElementById("sortOrder").textContent = isAscending ? "⬆️" : "⬇️";
 });
 
-// 🔹 Toggle (montrer/cacher) le menu des filtres
+// Toggle (montrer/cacher) le menu des filtres
 document.getElementById("toggleFilters").addEventListener("click", function () {
   const menu = document.getElementById("filterMenu");
   if (menu.classList.contains("show")) {
@@ -502,5 +547,5 @@ document.getElementById("toggleFilters").addEventListener("click", function () {
   }
 });
 
-// 🚀 Charger les tâches au démarrage
+// Charger les tâches au démarrage
 fetchTasks();

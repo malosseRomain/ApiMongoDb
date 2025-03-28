@@ -161,7 +161,6 @@ strong {
   background-color: #0056b3;
 }
 
-/* 🔹 Style du bouton pour afficher/cacher le menu */
 #toggleFilters {
   background-color: #007bff;
   color: white;
@@ -177,12 +176,11 @@ strong {
   background-color: #0056b3;
 }
 
-/* 🔹 Affichage du menu lorsqu'il est visible */
+/* Affichage du menu lorsqu'il est visible */
 #filterMenu.show {
   display: block;
 }
 
-/* 🔹 Alignement des éléments */
 #filterForm label {
   display: block;
   margin-top: 10px;
@@ -222,14 +220,13 @@ strong {
 
 #container {
   display: flex;
-  justify-content: space-between; /* Sépare les éléments à gauche et à droite */
-  align-items: flex-start; /* Aligne le haut des éléments */
+  justify-content: space-between;
+  align-items: flex-start;
   margin-top: 20px;
 }
 
-/* 🎯 Liste des tâches (à gauche) */
 #taskList {
-  flex-grow: 1; /* Prend tout l'espace restant */
+  flex-grow: 1;
   max-width: 45vw;
   background: white;
   border-radius: 10px;
@@ -246,9 +243,8 @@ strong {
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* 🎯 Menu des filtres (à droite) */
 #filterMenu {
-  width: 35%; /* Largeur du menu */
+  width: 35%;
   background: white;
   padding: 15px;
   border-radius: 10px;
@@ -256,7 +252,6 @@ strong {
   display: none;
 }
 
-/* 📱 Responsive Design */
 @media (max-width: 1024px) {
   #container {
     flex-direction: column;
@@ -273,7 +268,7 @@ strong {
 .sort-container {
   display: flex;
   align-items: center;
-  gap: 10px; /* Espace entre le select et le bouton */
+  gap: 10px;
 }
 
 .sort-btn {
