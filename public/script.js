@@ -57,15 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
   sortBySelect.addEventListener("change", sortTasks);
 });
 
-// Fonction pour définir la date minimale de l'échéance
-function setMinDate() {
-  const dateInput = document.getElementById("echeance");
-  if (dateInput) {
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.setAttribute("min", today);
-  }
-}
-
 // Fonction pour définir la date minimum sur les champs de date
 function setMinDate() {
   const today = new Date().toISOString().split("T")[0];
@@ -76,11 +67,54 @@ function setMinDate() {
   });
 }
 
-// Fonction async pour récupérer les tâches et les afficher via displayTasks()
 async function fetchTasks() {
   try {
-    const response = await fetch("/tasks");
+    // Récupérer les valeurs des filtres
+    const statut = document.getElementById("filterStatut").value || "";
+    const priorite = document.getElementById("filterPriorite").value || "";
+    const categorie = document.getElementById("filterCategorie").value.trim();
+    const etiquette = document.getElementById("filterEtiquette").value.trim();
+    const recherche = document.getElementById("filterRecherche").value.trim();
+    const tri = document.getElementById("sortBy").value || "";
+    const ordre = isAscending ? "asc" : "desc";
+
+    // échéance avant
+    let echeanceAvant = document.getElementById("filterEcheance").value;
+    if (echeanceAvant) {
+      let date = new Date(echeanceAvant);
+      date.setDate(date.getDate() - 1);
+      echeanceAvant = date.toISOString().split("T")[0];
+    }
+
+    // échéance après
+    let echeanceApres = document.getElementById("filterApres").value;
+    if (echeanceApres) {
+      let date = new Date(echeanceApres);
+      date.setDate(date.getDate() + 1);
+      echeanceApres = date.toISOString().split("T")[0];
+    }
+
+    // Construire l'URL des filtres
+    let params = new URLSearchParams();
+    if (statut) params.append("statut", statut);
+    if (priorite) params.append("priorite", priorite);
+    if (categorie) params.append("categorie", categorie);
+    if (etiquette) params.append("etiquette", etiquette);
+    if (recherche) params.append("q", recherche);
+    if (echeanceAvant) params.append("avant", echeanceAvant);
+    if (echeanceApres) params.append("apres", echeanceApres);
+    if (tri) {
+      params.append("tri", tri);
+      params.append("ordre", ordre);
+    }
+
+    const url = `/tasks?${params.toString()}`;
+
+    // Appel API avec les filtres
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Erreur serveur");
     const tasks = await response.json();
+
     displayTasks(tasks);
   } catch (err) {
     console.error("Erreur lors de la récupération des tâches :", err);
@@ -150,6 +184,14 @@ function resetForm() {
   setMinDate();
 }
 
+// Supprimer une tâche
+async function deleteTask(taskId) {
+  if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
+    await fetch(`/tasks/${taskId}`, { method: "DELETE" });
+    fetchTasks();
+  }
+}
+
 // Ajouter ou Modifier une tâche
 taskForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -196,19 +238,19 @@ taskForm.addEventListener("submit", async (e) => {
 
   // Vérifie si on est dans un mode de modification ou d'ajout
   if (taskId) {
-    console.log("Tâche modifié !");
     await fetch(`/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
+    alert("MODIFICATION de la tâche avec succès !");
   } else {
-    console.log("Tâche ajoutée !");
     await fetch("/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
+    alert("Ajout de la tâche avec succès !");
   }
 
   resetForm(); // Réinitialiser le formulaire après ajout ou modification
@@ -302,86 +344,6 @@ async function editTask(id) {
     document.getElementById("sousTachesContainer").innerHTML = "";
     document.getElementById("commentairesContainer").innerHTML = "";
 
-    // Ajouter dynamiquement les sous-tâches
-    if (Array.isArray(task.sousTaches)) {
-      task.sousTaches.forEach((sousTache) => {
-        const today = new Date().toISOString().split("T")[0];
-
-        const sousTacheDiv = document.createElement("div");
-        sousTacheDiv.className = "sous-tache-container";
-
-        sousTacheDiv.innerHTML = `
-          <input type="text" class="sous-tache-titre" value="${
-            sousTache.titre
-          }">
-          <select class="sous-tache-priorite">
-            <option value="Basse" ${
-              sousTache.priorite === "Basse" ? "selected" : ""
-            }>Basse</option>
-            <option value="Moyenne" ${
-              sousTache.priorite === "Moyenne" ? "selected" : ""
-            }>Moyenne</option>
-            <option value="Haute" ${
-              sousTache.priorite === "Haute" ? "selected" : ""
-            }>Haute</option>
-            <option value="Critique" ${
-              sousTache.priorite === "Critique" ? "selected" : ""
-            }>Critique</option>
-          </select>
-          <select class="sous-tache-statut">
-            <option value="à faire" ${
-              sousTache.statut === "à faire" ? "selected" : ""
-            }>À faire</option>
-            <option value="en cours" ${
-              sousTache.statut === "en cours" ? "selected" : ""
-            }>En cours</option>
-            <option value="terminé" ${
-              sousTache.statut === "terminé" ? "selected" : ""
-            }>Terminé</option>
-          </select>
-          <input type="date" class="sous-tache-echeance" min="${today}" value="${
-          sousTache.echeance
-            ? new Date(sousTache.echeance).toISOString().split("T")[0]
-            : ""
-        }">
-          <button type="button" class="supprimerSousTache">❌</button>
-        `;
-
-        sousTacheDiv
-          .querySelector(".supprimerSousTache")
-          .addEventListener("click", () => {
-            sousTacheDiv.remove();
-          });
-
-        document
-          .getElementById("sousTachesContainer")
-          .appendChild(sousTacheDiv);
-      });
-    }
-
-    // Ajouter dynamiquement les commentaires
-    if (Array.isArray(task.commentaires)) {
-      task.commentaires.forEach((commentaire) => {
-        const divComment = document.createElement("div");
-        divComment.className = "commentaire-container";
-
-        divComment.innerHTML = `
-          <textarea class="commentaire">${commentaire.contenu}</textarea>
-          <button type="button" class="supprimerCommentaire">❌</button>
-        `;
-
-        divComment
-          .querySelector(".supprimerCommentaire")
-          .addEventListener("click", () => {
-            divComment.remove();
-          });
-
-        document
-          .getElementById("commentairesContainer")
-          .appendChild(divComment);
-      });
-    }
-
     // Mettre l'ID de la tâche dans le formulaire pour la modification
     taskForm.dataset.taskId = id;
     document.querySelector("#taskForm button[type='submit']").textContent =
@@ -391,133 +353,6 @@ async function editTask(id) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (err) {
     console.error("Erreur lors de la récupération de la tâche :", err);
-  }
-}
-
-// Supprimer une tâche
-async function deleteTask(taskId) {
-  if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
-    await fetch(`/tasks/${taskId}`, { method: "DELETE" });
-    fetchTasks();
-  }
-}
-
-async function updateTask(event) {
-  event.preventDefault(); // Empêche le rechargement de la page
-
-  const taskId = taskForm.dataset.taskId; // Récupère l'ID de la tâche en cours d'édition
-
-  // Construire l'objet de la tâche modifiée
-  const updatedTask = {
-    titre: document.getElementById("titre").value,
-    description: document.getElementById("description").value,
-    statut: document.getElementById("statut").value,
-    categorie: document.getElementById("categorie").value,
-    priorite: document.getElementById("priorite").value,
-    echeance: document.getElementById("echeance").value
-      ? new Date(document.getElementById("echeance").value).toISOString()
-      : null,
-    auteur: {
-      nom: document.getElementById("auteurNom").value,
-      prenom: document.getElementById("auteurPrenom").value,
-      email: document.getElementById("auteurEmail").value,
-    },
-    etiquettes: document.getElementById("etiquettes").value
-      ? document
-          .getElementById("etiquettes")
-          .value.split(",")
-          .map((e) => e.trim())
-      : [],
-    sousTaches: [...document.querySelectorAll(".sous-tache-container")].map(
-      (st) => ({
-        titre: st.querySelector(".sous-tache-titre").value,
-        statut: st.querySelector(".sous-tache-statut").value,
-        echeance: st.querySelector(".sous-tache-echeance").value
-          ? new Date(
-              st.querySelector(".sous-tache-echeance").value
-            ).toISOString()
-          : null,
-      })
-    ),
-    commentaires: [...document.querySelectorAll(".commentaire-container")].map(
-      (c) => ({
-        auteur: "Utilisateur",
-        contenu: c.querySelector(".commentaire").value,
-      })
-    ),
-  };
-
-  try {
-    const response = await fetch(`/tasks/${taskId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedTask),
-    });
-
-    if (!response.ok) throw new Error("Erreur lors de la mise à jour");
-
-    alert("Tâche mise à jour avec succès !");
-    fetchTasks();
-  } catch (err) {
-    console.error("Erreur lors de la mise à jour :", err);
-  }
-}
-
-document.getElementById("taskForm").addEventListener("submit", updateTask);
-
-async function fetchTasks() {
-  try {
-    // Récupérer les valeurs des filtres
-    const statut = document.getElementById("filterStatut").value || "";
-    const priorite = document.getElementById("filterPriorite").value || "";
-    const categorie = document.getElementById("filterCategorie").value.trim();
-    const etiquette = document.getElementById("filterEtiquette").value.trim();
-    const recherche = document.getElementById("filterRecherche").value.trim();
-    const tri = document.getElementById("sortBy").value || "";
-    const ordre = isAscending ? "asc" : "desc";
-
-    // échéance avant
-    let echeanceAvant = document.getElementById("filterEcheance").value;
-    if (echeanceAvant) {
-      let date = new Date(echeanceAvant);
-      date.setDate(date.getDate() - 1);
-      echeanceAvant = date.toISOString().split("T")[0];
-    }
-
-    // échéance après
-    let echeanceApres = document.getElementById("filterApres").value;
-    if (echeanceApres) {
-      let date = new Date(echeanceApres);
-      date.setDate(date.getDate() + 1);
-      echeanceApres = date.toISOString().split("T")[0];
-    }
-
-    // Construire l'URL des filtres
-    let params = new URLSearchParams();
-    if (statut) params.append("statut", statut);
-    if (priorite) params.append("priorite", priorite);
-    if (categorie) params.append("categorie", categorie);
-    if (etiquette) params.append("etiquette", etiquette);
-    if (recherche) params.append("q", recherche);
-    if (echeanceAvant) params.append("avant", echeanceAvant);
-    if (echeanceApres) params.append("apres", echeanceApres);
-    if (tri) {
-      params.append("tri", tri);
-      params.append("ordre", ordre);
-    }
-
-    const url = `/tasks?${params.toString()}`;
-
-    // Appel API avec les filtres
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Erreur serveur");
-    const tasks = await response.json();
-
-    displayTasks(tasks);
-  } catch (err) {
-    console.error("Erreur lors de la récupération des tâches :", err);
   }
 }
 
