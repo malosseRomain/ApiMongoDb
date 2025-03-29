@@ -243,14 +243,14 @@ taskForm.addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
-    alert("MODIFICATION de la tâche avec succès !");
+    alert("Tâche modifier avec succès !");
   } else {
     await fetch("/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
-    alert("Ajout de la tâche avec succès !");
+    alert("Tâche ajouter avec succès !");
   }
 
   resetForm(); // Réinitialiser le formulaire après ajout ou modification
@@ -330,31 +330,173 @@ async function editTask(id) {
       ? new Date(task.echeance).toISOString().split("T")[0]
       : "";
 
-    // Remplir les infos de l'auteur
     document.getElementById("auteurNom").value = task.auteur?.nom || "";
     document.getElementById("auteurPrenom").value = task.auteur?.prenom || "";
     document.getElementById("auteurEmail").value = task.auteur?.email || "";
-
-    // Remplir les étiquettes
     document.getElementById("etiquettes").value = task.etiquettes
       ? task.etiquettes.join(", ")
       : "";
 
     // Supprimer les anciennes sous-tâches et commentaires affichés
-    document.getElementById("sousTachesContainer").innerHTML = "";
-    document.getElementById("commentairesContainer").innerHTML = "";
+    const sousTachesContainer = document.getElementById("sousTachesContainer");
+    const commentairesContainer = document.getElementById(
+      "commentairesContainer"
+    );
+    sousTachesContainer.innerHTML = "";
+    commentairesContainer.innerHTML = "";
+
+    // Ajouter les sous-tâches existantes
+    if (task.sousTaches && task.sousTaches.length > 0) {
+      task.sousTaches.forEach((sousTache) => {
+        const sousTacheDiv = document.createElement("div");
+        sousTacheDiv.className = "sous-tache-container";
+
+        sousTacheDiv.innerHTML = `
+          <input type="text" class="sous-tache-titre" value="${
+            sousTache.titre
+          }" placeholder="Titre de la sous-tâche">
+          <select class="sous-tache-priorite">
+            <option value="Basse" ${
+              sousTache.priorite === "Basse" ? "selected" : ""
+            }>Basse</option>
+            <option value="Moyenne" ${
+              sousTache.priorite === "Moyenne" ? "selected" : ""
+            }>Moyenne</option>
+            <option value="Haute" ${
+              sousTache.priorite === "Haute" ? "selected" : ""
+            }>Haute</option>
+            <option value="Critique" ${
+              sousTache.priorite === "Critique" ? "selected" : ""
+            }>Critique</option>
+          </select>
+          <select class="sous-tache-statut">
+            <option value="à faire" ${
+              sousTache.statut === "à faire" ? "selected" : ""
+            }>À faire</option>
+            <option value="en cours" ${
+              sousTache.statut === "en cours" ? "selected" : ""
+            }>En cours</option>
+            <option value="terminé" ${
+              sousTache.statut === "terminé" ? "selected" : ""
+            }>Terminé</option>
+          </select>
+          <input type="date" class="sous-tache-echeance" value="${
+            sousTache.echeance
+          }" min="${new Date().toISOString().split("T")[0]}">
+          <button type="button" class="supprimerSousTache">❌</button>
+        `;
+
+        // Ajouter un gestionnaire pour supprimer la sous-tâche
+        sousTacheDiv
+          .querySelector(".supprimerSousTache")
+          .addEventListener("click", () => {
+            sousTacheDiv.remove();
+          });
+
+        sousTachesContainer.appendChild(sousTacheDiv);
+      });
+    }
+
+    // Ajouter les commentaires existants
+    if (task.commentaires && task.commentaires.length > 0) {
+      task.commentaires.forEach((commentaire) => {
+        const commentaireDiv = document.createElement("div");
+        commentaireDiv.className = "commentaire-container";
+
+        commentaireDiv.innerHTML = `
+          <input type="text" class="commentaire" value="${commentaire.contenu}" placeholder="Ajouter un commentaire...">
+          <button type="button" class="supprimerCommentaire">❌</button>
+        `;
+
+        // Ajouter un gestionnaire pour supprimer le commentaire
+        commentaireDiv
+          .querySelector(".supprimerCommentaire")
+          .addEventListener("click", () => {
+            commentaireDiv.remove();
+          });
+
+        commentairesContainer.appendChild(commentaireDiv);
+      });
+    }
 
     // Mettre l'ID de la tâche dans le formulaire pour la modification
     taskForm.dataset.taskId = id;
+
     document.querySelector("#taskForm button[type='submit']").textContent =
       "Mettre à jour";
-
     setMinDate(); // S'assurer que les dates ne peuvent pas être passées
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Passer en mode modification
+    document.getElementById("addTaskBtn").style.display = "none";
+    document.getElementById("updateTaskBtn").style.display = "inline-block";
   } catch (err) {
     console.error("Erreur lors de la récupération de la tâche :", err);
   }
 }
+
+function getTaskDataFromForm() {
+  return {
+    titre: document.getElementById("titre").value,
+    description: document.getElementById("description").value,
+    statut: document.getElementById("statut").value,
+    categorie: document.getElementById("categorie").value,
+    priorite: document.getElementById("priorite").value,
+    auteur: {
+      nom: document.getElementById("auteurNom").value,
+      prenom: document.getElementById("auteurPrenom").value,
+      email: document.getElementById("auteurEmail").value,
+    },
+    etiquettes: document
+      .getElementById("etiquettes")
+      .value.split(",")
+      .map((e) => e.trim()),
+    echeance: document.getElementById("echeance").value,
+    sousTaches: Array.from(
+      document.querySelectorAll(".sous-tache-container")
+    ).map((container) => ({
+      titre: container.querySelector(".sous-tache-titre").value.trim(),
+      statut: container.querySelector(".sous-tache-statut").value,
+      priorite: container.querySelector(".sous-tache-priorite").value,
+      echeance: container.querySelector(".sous-tache-echeance").value,
+    })),
+    commentaires: Array.from(
+      document.querySelectorAll(".commentaire-container")
+    ).map((container) => ({
+      contenu: container.querySelector(".commentaire").value.trim(),
+      auteur: `${document.getElementById("auteurPrenom").value} ${
+        document.getElementById("auteurNom").value
+      }`,
+    })),
+  };
+}
+
+document.getElementById("updateTaskBtn").addEventListener("click", async () => {
+  const taskId = taskForm.dataset.taskId;
+  if (!taskId) {
+    console.error("Aucune tâche sélectionnée pour modification.");
+    return;
+  }
+
+  const taskData = getTaskDataFromForm();
+
+  try {
+    const response = await fetch(`/tasks/${taskId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(taskData),
+    });
+
+    if (!response.ok)
+      throw new Error("Erreur lors de la mise à jour de la tâche");
+
+    alert("Tâche mise à jour avec succès !");
+    resetForm();
+    fetchTasks();
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour :", err);
+  }
+});
 
 // Appliquer le filtrage quand on clique sur "Filtrer"
 document.getElementById("applyFilter").addEventListener("click", (e) => {

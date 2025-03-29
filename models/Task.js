@@ -39,8 +39,8 @@ const TaskSchema = new mongoose.Schema({
   historiqueModifications: [
     {
       champModifie: String,
-      ancienneValeur: String,
-      nouvelleValeur: String,
+      ancienneValeur: mongoose.Schema.Types.Mixed, // Accepte tout type de données
+      nouvelleValeur: mongoose.Schema.Types.Mixed, // Accepte tout type de données
       date: { type: Date, default: Date.now },
     },
   ],

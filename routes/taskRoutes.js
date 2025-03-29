@@ -86,7 +86,15 @@ router.post("/", async (req, res) => {
 // PUT /tasks/:id - Modifier une tâche existante
 router.put("/:id", async (req, res) => {
   try {
-    const { titre, description, statut, priorite, auteur } = req.body;
+    const {
+      titre,
+      description,
+      statut,
+      priorite,
+      auteur,
+      sousTaches,
+      commentaires,
+    } = req.body;
 
     // Vérifier si la tâche existe
     const task = await Task.findById(req.params.id);
@@ -127,6 +135,54 @@ router.put("/:id", async (req, res) => {
         date: new Date(),
       });
     }
+    if (auteur) {
+      if (auteur.nom && auteur.nom !== task.auteur.nom) {
+        modifications.push({
+          champModifie: "auteur.nom",
+          ancienneValeur: task.auteur.nom,
+          nouvelleValeur: auteur.nom,
+          date: new Date(),
+        });
+      }
+      if (auteur.prenom && auteur.prenom !== task.auteur.prenom) {
+        modifications.push({
+          champModifie: "auteur.prenom",
+          ancienneValeur: task.auteur.prenom,
+          nouvelleValeur: auteur.prenom,
+          date: new Date(),
+        });
+      }
+      if (auteur.email && auteur.email !== task.auteur.email) {
+        modifications.push({
+          champModifie: "auteur.email",
+          ancienneValeur: task.auteur.email,
+          nouvelleValeur: auteur.email,
+          date: new Date(),
+        });
+      }
+    }
+
+    // Gestion des sous-tâches
+    if (sousTaches) {
+      task.sousTaches = sousTaches; // Remplace les sous-tâches existantes
+      modifications.push({
+        champModifie: "sousTaches",
+        ancienneValeur: task.sousTaches,
+        nouvelleValeur: sousTaches,
+        date: new Date(),
+      });
+    }
+
+    // Gestion des commentaires
+    if (commentaires) {
+      task.commentaires = commentaires; // Remplace les commentaires existants
+      modifications.push({
+        champModifie: "commentaires",
+        ancienneValeur: task.commentaires,
+        nouvelleValeur: commentaires,
+        date: new Date(),
+      });
+    }
 
     // Construire l'objet de mise à jour
     const updateFields = {};
@@ -134,6 +190,7 @@ router.put("/:id", async (req, res) => {
     if (description) updateFields.description = description;
     if (statut) updateFields.statut = statut;
     if (priorite) updateFields.priorite = priorite;
+    if (auteur) updateFields.auteur = auteur;
 
     // Appliquer les mises à jour et ajouter l'historique
     const updatedTask = await Task.findByIdAndUpdate(
@@ -144,6 +201,11 @@ router.put("/:id", async (req, res) => {
       },
       { new: true }
     );
+
+    // Mettre à jour les sous-tâches et commentaires directement dans l'objet
+    if (sousTaches) updatedTask.sousTaches = sousTaches;
+    if (commentaires) updatedTask.commentaires = commentaires;
+    await updatedTask.save();
 
     res.status(200).json(updatedTask);
   } catch (err) {
