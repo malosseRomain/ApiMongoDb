@@ -10,6 +10,8 @@ ApiMongoDb est une API REST utilisant MongoDB comme base de données NoSQL. Elle
 
 Pour ajouter des commentaires ou des sous-tâches, il faut cliquer sur 'Modifier la tâche' depuis la liste des tâches.
 
+Vous pouvez retrouver un jeu de donnée dans "models/jeuxDonnée" a importer sur MongoDb
+
 ## Prérequis
 
 - Node.js (version 16 ou supérieure)

@@ -196,12 +196,14 @@ taskForm.addEventListener("submit", async (e) => {
 
   // Vérifie si on est dans un mode de modification ou d'ajout
   if (taskId) {
+    console.log("Tâche modifié !");
     await fetch(`/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
   } else {
+    console.log("Tâche ajoutée !");
     await fetch("/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
