@@ -320,6 +320,8 @@ async function editTask(id) {
     const response = await fetch(`/tasks/${id}`);
     const task = await response.json();
 
+    console.log(task.sousTaches); // Vérifiez si l'échéance est bien renvoyée
+
     // Remplir les champs du formulaire
     document.getElementById("titre").value = task.titre;
     document.getElementById("description").value = task.description || "";
@@ -382,6 +384,8 @@ async function editTask(id) {
           </select>
           <input type="date" class="sous-tache-echeance" value="${
             sousTache.echeance
+              ? new Date(sousTache.echeance).toISOString().split("T")[0]
+              : ""
           }" min="${new Date().toISOString().split("T")[0]}">
           <button type="button" class="supprimerSousTache">❌</button>
         `;
@@ -424,7 +428,6 @@ async function editTask(id) {
 
     document.querySelector("#taskForm button[type='submit']").textContent =
       "Mettre à jour";
-    setMinDate(); // S'assurer que les dates ne peuvent pas être passées
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     // Passer en mode modification
