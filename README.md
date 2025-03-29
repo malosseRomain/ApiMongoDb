@@ -12,6 +12,8 @@ Pour ajouter des commentaires ou des sous-tâches, il faut cliquer sur 'Modifier
 
 Vous pouvez retrouver un jeu de donnée dans "models/jeuxDonnée" a importer sur MongoDb
 
+Les filtres ne sont pas supprimés lors d'un simple rafraîchissement de la page (F5) ; un rafraîchissement complet des cookies est nécessaire (Ctrl + F5).
+
 ## Prérequis
 
 - Node.js (version 16 ou supérieure)
