@@ -214,8 +214,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // DELETE /tasks/:id - Supprimer une tâche
 router.delete("/:id", async (req, res) => {
   try {
