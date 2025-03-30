@@ -93,9 +93,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? `<ul>${task.commentaires
               .map(
                 (com) =>
-                  `<li>${com.contenu} <br><em>- ${com.auteur} (${new Date(
+                  `<li>
+                    ${com.contenu} <br>
+                    <em>- ${com.auteur ? com.auteur : "Inconnu"} (${new Date(
                     com.date
-                  ).toLocaleDateString()})</em></li>`
+                  ).toLocaleDateString()})</em>
+                  </li>`
               )
               .join("")}</ul>`
           : "<p>Aucun commentaire</p>"

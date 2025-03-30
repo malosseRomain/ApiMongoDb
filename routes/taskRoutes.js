@@ -8,54 +8,35 @@ router.get("/", async (req, res) => {
   try {
     let query = {};
 
-    // Filtres
     if (req.query.statut) query.statut = req.query.statut;
     if (req.query.priorite) query.priorite = req.query.priorite;
     if (req.query.categorie)
       query.categorie = { $regex: req.query.categorie, $options: "i" };
     if (req.query.etiquette) query.etiquettes = { $in: [req.query.etiquette] };
 
-    // Filtre sur les dates
-    if (req.query.avant) query.echeance = { $lte: new Date(req.query.avant) };
-    if (req.query.apres) query.echeance = { $gte: new Date(req.query.apres) };
-
-    // Recherche par texte libre
-    if (req.query.q) {
-      query.$or = [
-        { titre: { $regex: req.query.q, $options: "i" } },
-        { description: { $regex: req.query.q, $options: "i" } },
-      ];
+    // 🔥 Correction : Utilisation d'un objet Date réel 🔥
+    if (req.query.avant) {
+      const dateAvant = new Date(req.query.avant);
+      if (!isNaN(dateAvant)) {
+        query.echeance = { $lte: dateAvant };
+      }
     }
 
-    // Récupération des tâches
+    if (req.query.apres) {
+      const dateApres = new Date(req.query.apres);
+      if (!isNaN(dateApres)) {
+        query.echeance = query.echeance || {}; // S'assurer que l'objet existe
+        query.echeance.$gte = dateApres;
+      }
+    }
+
+    console.log("Requête MongoDB corrigée :", query);
+
     let tasks = await Task.find(query);
-
-    // Tri
-    if (req.query.tri) {
-      const sortField = req.query.tri;
-      const sortOrder = req.query.ordre === "desc" ? -1 : 1;
-
-      // Tri par date d'échéance, priorité, ou date de création
-      tasks = tasks.sort((a, b) => {
-        if (sortField === "echeance") {
-          return (new Date(a.echeance) - new Date(b.echeance)) * sortOrder;
-        }
-        if (sortField === "priorite") {
-          const priorites = ["basse", "moyenne", "haute", "critique"];
-          return (
-            (priorites.indexOf(a.priorite) - priorites.indexOf(b.priorite)) *
-            sortOrder
-          );
-        }
-        if (sortField === "dateCreation") {
-          return (new Date(a.createdAt) - new Date(b.createdAt)) * sortOrder;
-        }
-        return 0;
-      });
-    }
-
+    console.log("Tâches retournées :", tasks.length);
     res.json(tasks);
   } catch (err) {
+    console.error("Erreur serveur :", err);
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
@@ -246,23 +227,28 @@ router.post("/:id/sous-tache", async (req, res) => {
   }
 });
 
-// Ajout des commentaires
+// Ajout d'un commentaire
 router.post("/:id/commentaire", async (req, res) => {
   try {
+    console.log("Données reçues :", req.body); // Vérifiez les données reçues
     const { auteur, contenu } = req.body;
+
     if (!auteur || !contenu) {
       return res.status(400).json({ message: "Auteur et contenu sont requis" });
     }
 
     const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
+    if (!task) {
+      return res.status(404).json({ message: "Tâche non trouvée" });
+    }
 
     task.commentaires.push({ auteur, contenu, date: new Date() });
     await task.save();
 
     res.status(201).json(task);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Erreur lors de l'ajout du commentaire :", err);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 

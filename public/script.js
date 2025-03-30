@@ -78,21 +78,18 @@ async function fetchTasks() {
     const tri = document.getElementById("sortBy").value || "";
     const ordre = isAscending ? "asc" : "desc";
 
-    // échéance avant
     let echeanceAvant = document.getElementById("filterEcheance").value;
+    let echeanceApres = document.getElementById("filterApres").value;
+
+    // ✅ Vérification des dates avant envoi
     if (echeanceAvant) {
-      let date = new Date(echeanceAvant);
-      date.setDate(date.getDate() - 1);
-      echeanceAvant = date.toISOString().split("T")[0];
+      echeanceAvant = new Date(echeanceAvant).toISOString(); // Format correct pour MongoDB
+    }
+    if (echeanceApres) {
+      echeanceApres = new Date(echeanceApres).toISOString();
     }
 
-    // échéance après
-    let echeanceApres = document.getElementById("filterApres").value;
-    if (echeanceApres) {
-      let date = new Date(echeanceApres);
-      date.setDate(date.getDate() + 1);
-      echeanceApres = date.toISOString().split("T")[0];
-    }
+    console.log("Filtres envoyés :", { echeanceAvant, echeanceApres }); // Vérifier dans la console
 
     // Construire l'URL des filtres
     let params = new URLSearchParams();
@@ -225,15 +222,12 @@ taskForm.addEventListener("submit", async (e) => {
     })),
 
     // Commentaires
-    commentaires: Array.from(document.querySelectorAll(".commentaire")).map(
-      (input) => ({
-        auteur: `${document.getElementById("auteurPrenom").value} ${
-          document.getElementById("auteurNom").value
-        }`,
-        contenu: input.value.trim(),
-        date: new Date().toISOString(),
-      })
-    ),
+    commentaires: Array.from(
+      document.querySelectorAll(".commentaire-container")
+    ).map((container) => ({
+      contenu: container.querySelector(".commentaire").value.trim(),
+      auteur: container.querySelector(".auteur").value.trim(), // Récupérer l'auteur spécifique
+    })),
   };
 
   // Vérifie si on est dans un mode de modification ou d'ajout
@@ -267,12 +261,6 @@ document.getElementById("ajouterSousTache").addEventListener("click", () => {
 
   sousTacheDiv.innerHTML = `
     <input type="text" class="sous-tache-titre" placeholder="Titre de la sous-tâche">
-    <select class="sous-tache-priorite">
-      <option value="Basse">Basse</option>
-      <option value="Moyenne">Moyenne</option>
-      <option value="Haute">Haute</option>
-      <option value="Critique">Critique</option>
-    </select>
     <select class="sous-tache-statut">
       <option value="à faire">À faire</option>
       <option value="en cours">En cours</option>
@@ -292,7 +280,6 @@ document.getElementById("ajouterSousTache").addEventListener("click", () => {
   container.appendChild(sousTacheDiv);
 });
 
-// Ajouter un commentaire dynamiquement avec un bouton de suppression
 document.getElementById("ajouterCommentaire").addEventListener("click", () => {
   const container = document.getElementById("commentairesContainer");
 
@@ -300,7 +287,8 @@ document.getElementById("ajouterCommentaire").addEventListener("click", () => {
   divComment.className = "commentaire-container";
 
   divComment.innerHTML = `
-    <input type="text" class="commentaire" placeholder="Ajouter un commentaire..."></input>
+    <input type="text" class="auteur" id="auteurPrenom" placeholder="Auteur">
+    <input type="text" class="commentaire" placeholder="Ajouter un commentaire...">
     <button type="button" class="supprimerCommentaire">❌</button>
   `;
 
@@ -408,9 +396,14 @@ async function editTask(id) {
         commentaireDiv.className = "commentaire-container";
 
         commentaireDiv.innerHTML = `
-          <input type="text" class="commentaire" value="${commentaire.contenu}" placeholder="Ajouter un commentaire...">
-          <button type="button" class="supprimerCommentaire">❌</button>
-        `;
+      <input type="text" class="auteur" value="${
+        commentaire.auteur || ""
+      }" placeholder="Auteur">
+      <input type="text" class="commentaire" value="${
+        commentaire.contenu
+      }" placeholder="Ajouter un commentaire...">
+      <button type="button" class="supprimerCommentaire">❌</button>
+    `;
 
         // Ajouter un gestionnaire pour supprimer le commentaire
         commentaireDiv
@@ -467,9 +460,7 @@ function getTaskDataFromForm() {
       document.querySelectorAll(".commentaire-container")
     ).map((container) => ({
       contenu: container.querySelector(".commentaire").value.trim(),
-      auteur: `${document.getElementById("auteurPrenom").value} ${
-        document.getElementById("auteurNom").value
-      }`,
+      auteur: container.querySelector(".auteur").value.trim(),
     })),
   };
 }
