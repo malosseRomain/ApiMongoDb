@@ -263,7 +263,8 @@ document.getElementById("ajouterSousTache").addEventListener("click", () => {
     <select class="sous-tache-statut">
       <option value="à faire">À faire</option>
       <option value="en cours">En cours</option>
-      <option value="terminé">Terminé</option>
+      <option value="terminée">Terminée</option>
+      <option value="annulée">Annulée</option>
     </select>
     <input type="date" class="sous-tache-echeance" min="${today}">
     <button type="button" class="supprimerSousTache">❌</button>
@@ -341,25 +342,28 @@ async function editTask(id) {
         sousTacheDiv.className = "sous-tache-container";
 
         sousTacheDiv.innerHTML = `
-          <input type="text" class="sous-tache-titre" value="${
-            sousTache.titre
-          }" placeholder="Titre de la sous-tâche">
-          <select class="sous-tache-statut">
-            <option value="à faire" ${
-              sousTache.statut === "à faire" ? "selected" : ""
-            }>À faire</option>
-            <option value="en cours" ${
-              sousTache.statut === "en cours" ? "selected" : ""
-            }>En cours</option>
-            <option value="terminé" ${
-              sousTache.statut === "terminé" ? "selected" : ""
-            }>Terminé</option>
-          </select>
-          <input type="date" class="sous-tache-echeance" value="${
-            sousTache.echeance
-              ? new Date(sousTache.echeance).toISOString().split("T")[0]
-              : ""
-          }" min="${new Date().toISOString().split("T")[0]}">
+        <input type="text" class="sous-tache-titre" value="${
+          sousTache.titre
+        }" placeholder="Titre de la sous-tâche">
+        <select class="sous-tache-statut">
+          <option value="à faire" ${
+            sousTache.statut === "à faire" ? "selected" : ""
+          }>À faire</option>
+          <option value="en cours" ${
+            sousTache.statut === "en cours" ? "selected" : ""
+          }>En cours</option>
+          <option value="terminée" ${
+            sousTache.statut === "terminée" ? "selected" : ""
+          }>Terminée</option>
+          <option value="annulée" ${
+            sousTache.statut === "annulée" ? "selected" : ""
+          }>Annulée</option>
+        </select>
+        <input type="date" class="sous-tache-echeance" value="${
+          sousTache.echeance
+            ? new Date(sousTache.echeance).toISOString().split("T")[0]
+            : ""
+        }" min="${new Date().toISOString().split("T")[0]}">
           <button type="button" class="supprimerSousTache">❌</button>
         `;
 

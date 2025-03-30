@@ -25,7 +25,10 @@ const TaskSchema = new mongoose.Schema({
   sousTaches: [
     {
       titre: String,
-      statut: { type: String, enum: ["à faire", "en cours", "terminée"] },
+      statut: {
+        type: String,
+        enum: ["à faire", "en cours", "terminée", "annulée"],
+      },
       echeance: Date,
     },
   ],

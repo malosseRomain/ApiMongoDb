@@ -13,6 +13,7 @@ Pour ajouter des commentaires ou des sous-tâches, il faut cliquer sur 'Modifier
 Vous pouvez retrouver un jeu de donnée dans "models/jeuxDonnée" a importer sur MongoDb
 
 Les filtres ne sont pas supprimés lors d'un simple rafraîchissement de la page (F5) ; un rafraîchissement complet des cookies est nécessaire (Ctrl + F5).
+Pour le filtre des étiquettes, il faut saisir un mot entier. Par exemple, pour "SQL", une recherche avec "s" ne fonctionnera pas ; il faudra entrer "SQL" en entier. De plus, la recherche est sensible à la casse.
 
 ## Prérequis
 

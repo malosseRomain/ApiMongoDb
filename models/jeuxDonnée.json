@@ -1,10 +1,72 @@
 [
   {
+    "_id": {
+      "$oid": "67e97c8ea71cd18b5748edfc"
+    },
+    "titre": "Corriger un bug critique",
+    "description": "Erreur 500 sur la page d'inscription lors de la validation des champs.",
+    "echeance": {
+      "$date": "2025-04-23T00:00:00.000Z"
+    },
+    "statut": "en cours",
+    "priorite": "moyenne",
+    "auteur": {
+      "nom": "MALOSSE",
+      "prenom": "Romain",
+      "email": "romain.malosse43@icloud.com"
+    },
+    "categorie": "Bugfix",
+    "etiquettes": ["backend", "Node.js", "MongoDb"],
+    "sousTaches": [
+      {
+        "titre": "Analyser les logs",
+        "statut": "terminée",
+        "echeance": {
+          "$date": "2025-04-06T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97c8ea71cd18b5748edfd"
+        }
+      },
+      {
+        "titre": "Corriger la requête défaillante",
+        "statut": "en cours",
+        "echeance": {
+          "$date": "2025-04-05T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97c8ea71cd18b5748edfe"
+        }
+      }
+    ],
+    "commentaires": [
+      {
+        "auteur": "Jean Dupont",
+        "contenu": "Le bug semble lié à une mauvaise validation des données.",
+        "_id": {
+          "$oid": "67e97c8ea71cd18b5748edff"
+        },
+        "date": {
+          "$date": "2025-03-30T17:17:02.088Z"
+        }
+      }
+    ],
+    "dateCreation": {
+      "$date": "2025-03-29T17:17:02.088Z"
+    },
+    "historiqueModifications": [],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "67e97ceaa71cd18b5748ee24"
+    },
     "titre": "Développer une nouvelle fonctionnalité",
     "description": "Créer une page de gestion des utilisateurs avec une interface intuitive.",
-    "dateCreation": "2024-03-29T08:00:00.000+00:00",
-    "echeance": "2024-04-15T23:59:59.000+00:00",
-    "statut": "en cours",
+    "echeance": {
+      "$date": "2025-04-18T00:00:00.000Z"
+    },
+    "statut": "à faire",
     "priorite": "haute",
     "auteur": {
       "nom": "Dupont",
@@ -16,174 +78,334 @@
     "sousTaches": [
       {
         "titre": "Créer les maquettes",
-        "statut": "terminée",
-        "echeance": "2024-04-01T23:59:59.000+00:00"
+        "statut": "à faire",
+        "echeance": {
+          "$date": "2025-04-04T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef5d"
+        }
       },
       {
         "titre": "Développer l'interface",
         "statut": "en cours",
-        "echeance": "2024-04-10T23:59:59.000+00:00"
+        "echeance": {
+          "$date": "2025-04-16T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef5e"
+        }
       },
       {
         "titre": "Intégrer l’API backend",
-        "statut": "à faire",
-        "echeance": "2024-04-12T23:59:59.000+00:00"
+        "statut": "annulée",
+        "echeance": {
+          "$date": "2025-04-04T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef5f"
+        }
       }
     ],
     "commentaires": [
       {
         "auteur": "Alice Martin",
-        "date": "2024-03-30T10:15:00.000+00:00",
-        "contenu": "Les maquettes sont prêtes, tu peux commencer le dev !"
+        "contenu": "Les maquettes sont prêtes, tu peux commencer le dev !",
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef60"
+        },
+        "date": {
+          "$date": "2025-03-30T17:25:12.472Z"
+        }
       }
     ],
+    "dateCreation": {
+      "$date": "2025-03-30T17:18:34.104Z"
+    },
     "historiqueModifications": [
       {
-        "champModifie": "statut",
-        "ancienneValeur": "à faire",
-        "nouvelleValeur": "en cours",
-        "date": "2024-03-30T14:00:00.000+00:00"
-      }
-    ]
-  },
-  {
-    "titre": "Corriger un bug critique",
-    "description": "Erreur 500 sur la page d'inscription lors de la validation des champs.",
-    "dateCreation": "2024-03-25T09:30:00.000+00:00",
-    "echeance": "2024-03-31T23:59:59.000+00:00",
-    "statut": "terminée",
-    "priorite": "critique",
-    "auteur": {
-      "nom": "Martin",
-      "prenom": "Alice",
-      "email": "alice.martin@example.com"
-    },
-    "categorie": "Bugfix",
-    "etiquettes": ["backend", "Node.js", "MongoDB"],
-    "sousTaches": [
-      {
-        "titre": "Analyser les logs",
-        "statut": "terminée",
-        "echeance": "2024-03-26T23:59:59.000+00:00"
+        "champModifie": "auteur.prenom",
+        "ancienneValeur": "Jean Dupont",
+        "nouvelleValeur": "Jean",
+        "date": {
+          "$date": "2025-03-30T17:25:12.470Z"
+        },
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef52"
+        }
       },
       {
-        "titre": "Corriger la requête défaillante",
-        "statut": "terminée",
-        "echeance": "2024-03-28T23:59:59.000+00:00"
+        "champModifie": "sousTaches",
+        "ancienneValeur": [
+          {
+            "titre": "Créer les maquettes",
+            "statut": "à faire",
+            "echeance": {
+              "$date": "2025-04-04T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e78a71cd18b5748ef4e"
+            }
+          },
+          {
+            "titre": "Développer l'interface",
+            "statut": "en cours",
+            "echeance": {
+              "$date": "2025-04-16T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e78a71cd18b5748ef4f"
+            }
+          },
+          {
+            "titre": "Intégrer l’API backend",
+            "statut": "annulée",
+            "echeance": {
+              "$date": "2025-04-04T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e78a71cd18b5748ef50"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "titre": "Créer les maquettes",
+            "statut": "à faire",
+            "echeance": "2025-04-04"
+          },
+          {
+            "titre": "Développer l'interface",
+            "statut": "en cours",
+            "echeance": "2025-04-16"
+          },
+          {
+            "titre": "Intégrer l’API backend",
+            "statut": "annulée",
+            "echeance": "2025-04-04"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:25:12.470Z"
+        },
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef53"
+        }
+      },
+      {
+        "champModifie": "commentaires",
+        "ancienneValeur": [
+          {
+            "auteur": "Alice Martin",
+            "contenu": "Les maquettes sont prêtes, tu peux commencer le dev !",
+            "_id": {
+              "$oid": "67e97e78a71cd18b5748ef51"
+            },
+            "date": {
+              "$date": "2025-03-30T17:25:12.470Z"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "contenu": "Les maquettes sont prêtes, tu peux commencer le dev !",
+            "auteur": "Alice Martin"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:25:12.470Z"
+        },
+        "_id": {
+          "$oid": "67e97e78a71cd18b5748ef54"
+        }
       }
     ],
-    "commentaires": [
-      {
-        "auteur": "Jean Dupont",
-        "date": "2024-03-26T11:45:00.000+00:00",
-        "contenu": "Le bug semble lié à une mauvaise validation des données."
-      }
-    ],
-    "historiqueModifications": [
-      {
-        "champModifie": "statut",
-        "ancienneValeur": "en cours",
-        "nouvelleValeur": "terminée",
-        "date": "2024-03-28T18:30:00.000+00:00"
-      }
-    ]
+    "__v": 1
   },
   {
+    "_id": {
+      "$oid": "67e97d3ea71cd18b5748ee32"
+    },
     "titre": "Optimisation de la base de données",
     "description": "Réduire le temps de réponse des requêtes pour améliorer les performances.",
-    "dateCreation": "2024-03-20T14:00:00.000+00:00",
-    "echeance": "2024-04-05T23:59:59.000+00:00",
+    "echeance": {
+      "$date": "2025-04-05T00:00:00.000Z"
+    },
     "statut": "en cours",
-    "priorite": "moyenne",
+    "priorite": "critique",
     "auteur": {
-      "nom": "Durand",
+      "nom": "Durant",
       "prenom": "Paul",
       "email": "paul.durand@example.com"
     },
     "categorie": "Optimisation",
-    "etiquettes": ["SQL", "indexation", "performances"],
+    "etiquettes": ["SQL", "Indexation", "Performance"],
     "sousTaches": [
       {
         "titre": "Analyser les requêtes lentes",
-        "statut": "terminée",
-        "echeance": "2024-03-25T23:59:59.000+00:00"
-      },
-      {
-        "titre": "Mettre en place des index",
-        "statut": "en cours",
-        "echeance": "2024-03-30T23:59:59.000+00:00"
+        "statut": "à faire",
+        "echeance": {
+          "$date": "2025-04-06T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97d3ea71cd18b5748ee33"
+        }
       },
       {
         "titre": "Tester les performances",
         "statut": "à faire",
-        "echeance": "2024-04-03T23:59:59.000+00:00"
+        "echeance": {
+          "$date": "2025-04-04T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97d3ea71cd18b5748ee34"
+        }
       }
     ],
     "commentaires": [
       {
-        "auteur": "Alice Martin",
-        "date": "2024-03-23T16:00:00.000+00:00",
-        "contenu": "On a identifié quelques requêtes problématiques, à optimiser en priorité."
+        "auteur": "Alice Martina",
+        "contenu": "On a identifié quelques requêtes problématiques, à optimiser en priorité.",
+        "_id": {
+          "$oid": "67e97d3ea71cd18b5748ee35"
+        },
+        "date": {
+          "$date": "2025-03-30T17:19:58.840Z"
+        }
       }
     ],
-    "historiqueModifications": [
-      {
-        "champModifie": "priorite",
-        "ancienneValeur": "basse",
-        "nouvelleValeur": "moyenne",
-        "date": "2024-03-22T10:00:00.000+00:00"
-      }
-    ]
+    "dateCreation": {
+      "$date": "2025-03-30T17:19:58.840Z"
+    },
+    "historiqueModifications": [],
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67e97daaa71cd18b5748ee42"
+    },
     "titre": "Refonte du design du tableau de bord",
     "description": "Moderniser l'interface utilisateur du tableau de bord principal.",
-    "dateCreation": "2024-03-18T10:30:00.000+00:00",
-    "echeance": "2024-04-10T23:59:59.000+00:00",
-    "statut": "en cours",
-    "priorite": "haute",
+    "echeance": {
+      "$date": "2025-04-03T00:00:00.000Z"
+    },
+    "statut": "annulée",
+    "priorite": "basse",
     "auteur": {
       "nom": "Bernard",
       "prenom": "Lucas",
       "email": "lucas.bernard@example.com"
     },
     "categorie": "Design UI/UX",
-    "etiquettes": ["UI", "UX", "Figma"],
+    "etiquettes": ["UI", "UX", "Design", "Figma"],
     "sousTaches": [
       {
-        "titre": "Créer les wireframes",
-        "statut": "terminée",
-        "echeance": "2024-03-22T23:59:59.000+00:00"
-      },
-      {
         "titre": "Développer le design en CSS",
-        "statut": "en cours",
-        "echeance": "2024-04-05T23:59:59.000+00:00"
+        "statut": "à faire",
+        "echeance": {
+          "$date": "2025-04-04T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97e6ca71cd18b5748ef26"
+        }
       }
     ],
     "commentaires": [
       {
-        "auteur": "Paul Durand",
-        "date": "2024-03-19T14:45:00.000+00:00",
-        "contenu": "J’aime bien la direction prise, attention aux contrastes."
+        "auteur": "Paul durant",
+        "contenu": "J’aime bien la direction prise, attention aux contrastes.",
+        "_id": {
+          "$oid": "67e97e6ca71cd18b5748ef27"
+        },
+        "date": {
+          "$date": "2025-03-30T17:25:00.843Z"
+        }
       }
     ],
+    "dateCreation": {
+      "$date": "2025-03-30T17:21:46.369Z"
+    },
     "historiqueModifications": [
       {
-        "champModifie": "echeance",
-        "ancienneValeur": "2024-04-07T23:59:59Z",
-        "nouvelleValeur": "2024-04-10T23:59:59Z",
-        "date": "2024-03-25T12:00:00.000+00:00"
+        "champModifie": "statut",
+        "ancienneValeur": "à faire",
+        "nouvelleValeur": "annulée",
+        "date": {
+          "$date": "2025-03-30T17:25:00.840Z"
+        },
+        "_id": {
+          "$oid": "67e97e6ca71cd18b5748ef1d"
+        }
+      },
+      {
+        "champModifie": "sousTaches",
+        "ancienneValeur": [
+          {
+            "titre": "Développer le design en CSS",
+            "statut": "à faire",
+            "echeance": {
+              "$date": "2025-04-04T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e6ca71cd18b5748ef1b"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "titre": "Développer le design en CSS",
+            "statut": "à faire",
+            "echeance": "2025-04-04"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:25:00.841Z"
+        },
+        "_id": {
+          "$oid": "67e97e6ca71cd18b5748ef1e"
+        }
+      },
+      {
+        "champModifie": "commentaires",
+        "ancienneValeur": [
+          {
+            "auteur": "Paul durant",
+            "contenu": "J’aime bien la direction prise, attention aux contrastes.",
+            "_id": {
+              "$oid": "67e97e6ca71cd18b5748ef1c"
+            },
+            "date": {
+              "$date": "2025-03-30T17:25:00.841Z"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "contenu": "J’aime bien la direction prise, attention aux contrastes.",
+            "auteur": "Paul durant"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:25:00.841Z"
+        },
+        "_id": {
+          "$oid": "67e97e6ca71cd18b5748ef1f"
+        }
       }
-    ]
+    ],
+    "__v": 1
   },
   {
+    "_id": {
+      "$oid": "67e97dfda71cd18b5748ee53"
+    },
     "titre": "Automatisation du déploiement",
     "description": "Mettre en place un pipeline CI/CD avec GitHub Actions.",
-    "dateCreation": "2024-03-15T08:45:00.000+00:00",
-    "echeance": "2024-04-01T23:59:59.000+00:00",
-    "statut": "en cours",
-    "priorite": "critique",
+    "echeance": {
+      "$date": "2025-04-14T00:00:00.000Z"
+    },
+    "statut": "à faire",
+    "priorite": "basse",
     "auteur": {
       "nom": "Moreau",
       "prenom": "Sophie",
@@ -193,23 +415,231 @@
     "etiquettes": ["CI/CD", "GitHub Actions", "Docker"],
     "sousTaches": [
       {
-        "titre": "Configurer GitHub Actions",
+        "titre": "",
         "statut": "terminée",
-        "echeance": "2024-03-20T23:59:59.000+00:00"
-      },
-      {
-        "titre": "Mettre en place les tests automatisés",
-        "statut": "en cours",
-        "echeance": "2024-03-28T23:59:59.000+00:00"
+        "echeance": {
+          "$date": "2025-05-10T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e97e4ea71cd18b5748eeee"
+        }
       }
     ],
     "commentaires": [
       {
-        "auteur": "Lucas Bernard",
-        "date": "2024-03-17T15:30:00.000+00:00",
-        "contenu": "Super initiative, ça va accélérer nos déploiements."
+        "auteur": "Lucad Bernard",
+        "contenu": "Super initiative, ça va accélérer nos déploiements.",
+        "_id": {
+          "$oid": "67e97e4ea71cd18b5748eeef"
+        },
+        "date": {
+          "$date": "2025-03-30T17:24:30.098Z"
+        }
       }
     ],
-    "historiqueModifications": []
+    "dateCreation": {
+      "$date": "2025-03-30T17:23:09.721Z"
+    },
+    "historiqueModifications": [
+      {
+        "champModifie": "auteur.nom",
+        "ancienneValeur": "moreau",
+        "nouvelleValeur": "Moreau",
+        "date": {
+          "$date": "2025-03-30T17:23:25.828Z"
+        },
+        "_id": {
+          "$oid": "67e97e0da71cd18b5748ee6e"
+        }
+      },
+      {
+        "champModifie": "auteur.prenom",
+        "ancienneValeur": "sophie",
+        "nouvelleValeur": "Sophie",
+        "date": {
+          "$date": "2025-03-30T17:23:25.828Z"
+        },
+        "_id": {
+          "$oid": "67e97e0da71cd18b5748ee6f"
+        }
+      },
+      {
+        "champModifie": "sousTaches",
+        "ancienneValeur": [
+          {
+            "titre": "",
+            "statut": "terminée",
+            "echeance": {
+              "$date": "2025-05-10T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e0da71cd18b5748ee6c"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "titre": "",
+            "statut": "terminée",
+            "echeance": "2025-05-10"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:23:25.828Z"
+        },
+        "_id": {
+          "$oid": "67e97e0da71cd18b5748ee70"
+        }
+      },
+      {
+        "champModifie": "commentaires",
+        "ancienneValeur": [
+          {
+            "auteur": "Lucad Bernar-d",
+            "contenu": "Super initiative, ça va accélérer nos déploiements.",
+            "_id": {
+              "$oid": "67e97e0da71cd18b5748ee6d"
+            },
+            "date": {
+              "$date": "2025-03-30T17:23:25.829Z"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "contenu": "Super initiative, ça va accélérer nos déploiements.",
+            "auteur": "Lucad Bernar-d"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:23:25.829Z"
+        },
+        "_id": {
+          "$oid": "67e97e0da71cd18b5748ee71"
+        }
+      },
+      {
+        "champModifie": "sousTaches",
+        "ancienneValeur": [
+          {
+            "titre": "",
+            "statut": "terminée",
+            "echeance": {
+              "$date": "2025-05-10T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e1da71cd18b5748ee9d"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "titre": "",
+            "statut": "terminée",
+            "echeance": "2025-05-10"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:23:41.044Z"
+        },
+        "_id": {
+          "$oid": "67e97e1da71cd18b5748ee9f"
+        }
+      },
+      {
+        "champModifie": "commentaires",
+        "ancienneValeur": [
+          {
+            "auteur": "Lucad Bernard",
+            "contenu": "Super initiative, ça va accélérer nos déploiements.",
+            "_id": {
+              "$oid": "67e97e1da71cd18b5748ee9e"
+            },
+            "date": {
+              "$date": "2025-03-30T17:23:41.044Z"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "contenu": "Super initiative, ça va accélérer nos déploiements.",
+            "auteur": "Lucad Bernard"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:23:41.044Z"
+        },
+        "_id": {
+          "$oid": "67e97e1da71cd18b5748eea0"
+        }
+      },
+      {
+        "champModifie": "echeance",
+        "ancienneValeur": null,
+        "nouvelleValeur": "2025-04-14",
+        "date": {
+          "$date": "2025-03-30T17:24:30.095Z"
+        },
+        "_id": {
+          "$oid": "67e97e4ea71cd18b5748eedf"
+        }
+      },
+      {
+        "champModifie": "sousTaches",
+        "ancienneValeur": [
+          {
+            "titre": "",
+            "statut": "terminée",
+            "echeance": {
+              "$date": "2025-05-10T00:00:00.000Z"
+            },
+            "_id": {
+              "$oid": "67e97e4ea71cd18b5748eedd"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "titre": "",
+            "statut": "terminée",
+            "echeance": "2025-05-10"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:24:30.096Z"
+        },
+        "_id": {
+          "$oid": "67e97e4ea71cd18b5748eee0"
+        }
+      },
+      {
+        "champModifie": "commentaires",
+        "ancienneValeur": [
+          {
+            "auteur": "Lucad Bernard",
+            "contenu": "Super initiative, ça va accélérer nos déploiements.",
+            "_id": {
+              "$oid": "67e97e4ea71cd18b5748eede"
+            },
+            "date": {
+              "$date": "2025-03-30T17:24:30.096Z"
+            }
+          }
+        ],
+        "nouvelleValeur": [
+          {
+            "contenu": "Super initiative, ça va accélérer nos déploiements.",
+            "auteur": "Lucad Bernard"
+          }
+        ],
+        "date": {
+          "$date": "2025-03-30T17:24:30.096Z"
+        },
+        "_id": {
+          "$oid": "67e97e4ea71cd18b5748eee1"
+        }
+      }
+    ],
+    "__v": 3
   }
 ]

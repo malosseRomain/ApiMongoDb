@@ -8,31 +8,56 @@ router.get("/", async (req, res) => {
   try {
     let query = {};
 
+    // Filtres
     if (req.query.statut) query.statut = req.query.statut;
     if (req.query.priorite) query.priorite = req.query.priorite;
     if (req.query.categorie)
       query.categorie = { $regex: req.query.categorie, $options: "i" };
     if (req.query.etiquette) query.etiquettes = { $in: [req.query.etiquette] };
 
-    if (req.query.avant) {
-      const dateAvant = new Date(req.query.avant);
-      if (!isNaN(dateAvant)) {
-        query.echeance = { $lte: dateAvant };
-      }
+    // Filtre sur les dates
+    if (req.query.avant) query.echeance = { $lte: new Date(req.query.avant) };
+    if (req.query.apres) query.echeance = { $gte: new Date(req.query.apres) };
+
+    // Recherche par texte libre
+    if (req.query.q) {
+      query.$or = [
+        { titre: { $regex: req.query.q, $options: "i" } },
+        { description: { $regex: req.query.q, $options: "i" } },
+      ];
     }
 
-    if (req.query.apres) {
-      const dateApres = new Date(req.query.apres);
-      if (!isNaN(dateApres)) {
-        query.echeance = query.echeance || {};
-        query.echeance.$gte = dateApres;
-      }
-    }
-
+    // Récupération des tâches
     let tasks = await Task.find(query);
+
+    // Tri
+    if (req.query.tri) {
+      const sortField = req.query.tri;
+      const sortOrder = req.query.ordre === "desc" ? -1 : 1;
+
+      // Tri par date d'échéance, priorité, ou date de création
+      tasks = tasks.sort((a, b) => {
+        if (sortField === "echeance") {
+          return (new Date(a.echeance) - new Date(b.echeance)) * sortOrder;
+        }
+        if (sortField === "priorite") {
+          const priorites = ["basse", "moyenne", "haute", "critique"];
+          return (
+            (priorites.indexOf(a.priorite) - priorites.indexOf(b.priorite)) *
+            sortOrder
+          );
+        }
+        if (sortField === "dateCreation") {
+          return (
+            (new Date(a.dateCreation) - new Date(b.dateCreation)) * sortOrder
+          );
+        }
+        return 0;
+      });
+    }
+
     res.json(tasks);
   } catch (err) {
-    console.error("Erreur serveur :", err);
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
