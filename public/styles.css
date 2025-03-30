@@ -3,6 +3,7 @@ body {
   max-width: 85vw;
   margin: auto;
   padding: 20px;
+  background-color: #dfdfdf;
 }
 
 input,
@@ -107,6 +108,7 @@ li {
   background-color: #f9f9f9;
   margin: auto;
   margin-bottom: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .task-container h2 {
@@ -179,6 +181,7 @@ strong {
 /* Affichage du menu lorsqu'il est visible */
 #filterMenu.show {
   display: block;
+  margin-top: 20px;
 }
 
 #filterForm label {
@@ -228,9 +231,7 @@ strong {
 #taskList {
   flex-grow: 1;
   max-width: 45vw;
-  background: white;
   border-radius: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   list-style-type: none;
 }
 
