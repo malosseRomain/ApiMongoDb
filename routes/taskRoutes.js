@@ -29,10 +29,7 @@ router.get("/", async (req, res) => {
       }
     }
 
-    console.log("Requête MongoDB corrigée :", query);
-
     let tasks = await Task.find(query);
-    console.log("Tâches retournées :", tasks.length);
     res.json(tasks);
   } catch (err) {
     console.error("Erreur serveur :", err);
@@ -71,6 +68,9 @@ router.put("/:id", async (req, res) => {
       description,
       statut,
       priorite,
+      echeance,
+      categorie,
+      etiquettes,
       auteur,
       sousTaches,
       commentaires,
@@ -115,6 +115,40 @@ router.put("/:id", async (req, res) => {
         date: new Date(),
       });
     }
+
+    // Gestion de l'échéance
+    if (
+      echeance &&
+      new Date(echeance).toISOString() !== task.echeance?.toISOString()
+    ) {
+      modifications.push({
+        champModifie: "echeance",
+        ancienneValeur: task.echeance,
+        nouvelleValeur: echeance,
+        date: new Date(),
+      });
+    }
+
+    // Gestion de la catégorie
+    if (categorie && categorie !== task.categorie) {
+      modifications.push({
+        champModifie: "categorie",
+        ancienneValeur: task.categorie,
+        nouvelleValeur: categorie,
+        date: new Date(),
+      });
+    }
+
+    // Gestion des étiquettes
+    if (etiquettes && etiquettes.join(",") !== task.etiquettes.join(",")) {
+      modifications.push({
+        champModifie: "etiquettes",
+        ancienneValeur: task.etiquettes,
+        nouvelleValeur: etiquettes,
+        date: new Date(),
+      });
+    }
+
     if (auteur) {
       if (auteur.nom && auteur.nom !== task.auteur.nom) {
         modifications.push({
@@ -170,6 +204,9 @@ router.put("/:id", async (req, res) => {
     if (description) updateFields.description = description;
     if (statut) updateFields.statut = statut;
     if (priorite) updateFields.priorite = priorite;
+    if (echeance) updateFields.echeance = echeance;
+    if (categorie) updateFields.categorie = categorie;
+    if (etiquettes) updateFields.etiquettes = etiquettes;
     if (auteur) updateFields.auteur = auteur;
 
     // Appliquer les mises à jour et ajouter l'historique

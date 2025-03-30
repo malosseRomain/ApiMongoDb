@@ -217,7 +217,6 @@ taskForm.addEventListener("submit", async (e) => {
     ).map((container) => ({
       titre: container.querySelector(".sous-tache-titre").value.trim(),
       statut: container.querySelector(".sous-tache-statut").value,
-      priorite: container.querySelector(".sous-tache-priorite").value,
       echeance: container.querySelector(".sous-tache-echeance").value,
     })),
 
@@ -345,20 +344,6 @@ async function editTask(id) {
           <input type="text" class="sous-tache-titre" value="${
             sousTache.titre
           }" placeholder="Titre de la sous-tâche">
-          <select class="sous-tache-priorite">
-            <option value="Basse" ${
-              sousTache.priorite === "Basse" ? "selected" : ""
-            }>Basse</option>
-            <option value="Moyenne" ${
-              sousTache.priorite === "Moyenne" ? "selected" : ""
-            }>Moyenne</option>
-            <option value="Haute" ${
-              sousTache.priorite === "Haute" ? "selected" : ""
-            }>Haute</option>
-            <option value="Critique" ${
-              sousTache.priorite === "Critique" ? "selected" : ""
-            }>Critique</option>
-          </select>
           <select class="sous-tache-statut">
             <option value="à faire" ${
               sousTache.statut === "à faire" ? "selected" : ""
@@ -453,7 +438,6 @@ function getTaskDataFromForm() {
     ).map((container) => ({
       titre: container.querySelector(".sous-tache-titre").value.trim(),
       statut: container.querySelector(".sous-tache-statut").value,
-      priorite: container.querySelector(".sous-tache-priorite").value,
       echeance: container.querySelector(".sous-tache-echeance").value,
     })),
     commentaires: Array.from(
@@ -474,6 +458,8 @@ document.getElementById("updateTaskBtn").addEventListener("click", async () => {
 
   const taskData = getTaskDataFromForm();
 
+  console.log("Données envoyées :", taskData); // Vérifiez les données envoyées
+
   try {
     const response = await fetch(`/tasks/${taskId}`, {
       method: "PUT",
@@ -481,14 +467,17 @@ document.getElementById("updateTaskBtn").addEventListener("click", async () => {
       body: JSON.stringify(taskData),
     });
 
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error("Erreur lors de la mise à jour de la tâche");
+    }
 
+    const updatedTask = await response.json();
+    console.log("Tâche mise à jour :", updatedTask);
     alert("Tâche mise à jour avec succès !");
-    resetForm();
-    fetchTasks();
+    location.reload(); // Recharge la page pour afficher les modifications
   } catch (err) {
-    console.error("Erreur lors de la mise à jour :", err);
+    console.error("Erreur :", err);
+    alert("Erreur lors de la mise à jour de la tâche");
   }
 });
 
