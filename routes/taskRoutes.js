@@ -14,7 +14,6 @@ router.get("/", async (req, res) => {
       query.categorie = { $regex: req.query.categorie, $options: "i" };
     if (req.query.etiquette) query.etiquettes = { $in: [req.query.etiquette] };
 
-    // 🔥 Correction : Utilisation d'un objet Date réel 🔥
     if (req.query.avant) {
       const dateAvant = new Date(req.query.avant);
       if (!isNaN(dateAvant)) {
@@ -25,7 +24,7 @@ router.get("/", async (req, res) => {
     if (req.query.apres) {
       const dateApres = new Date(req.query.apres);
       if (!isNaN(dateApres)) {
-        query.echeance = query.echeance || {}; // S'assurer que l'objet existe
+        query.echeance = query.echeance || {};
         query.echeance.$gte = dateApres;
       }
     }
@@ -145,7 +144,7 @@ router.put("/:id", async (req, res) => {
 
     // Gestion des sous-tâches
     if (sousTaches) {
-      task.sousTaches = sousTaches; // Remplace les sous-tâches existantes
+      task.sousTaches = sousTaches;
       modifications.push({
         champModifie: "sousTaches",
         ancienneValeur: task.sousTaches,
@@ -156,7 +155,7 @@ router.put("/:id", async (req, res) => {
 
     // Gestion des commentaires
     if (commentaires) {
-      task.commentaires = commentaires; // Remplace les commentaires existants
+      task.commentaires = commentaires;
       modifications.push({
         champModifie: "commentaires",
         ancienneValeur: task.commentaires,
@@ -230,7 +229,6 @@ router.post("/:id/sous-tache", async (req, res) => {
 // Ajout d'un commentaire
 router.post("/:id/commentaire", async (req, res) => {
   try {
-    console.log("Données reçues :", req.body); // Vérifiez les données reçues
     const { auteur, contenu } = req.body;
 
     if (!auteur || !contenu) {

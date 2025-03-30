@@ -247,8 +247,8 @@ taskForm.addEventListener("submit", async (e) => {
     alert("Tâche ajouter avec succès !");
   }
 
-  resetForm(); // Réinitialiser le formulaire après ajout ou modification
-  fetchTasks(); // Recharger la liste des tâches
+  resetForm();
+  fetchTasks();
 });
 
 // Ajouter une sous-tâche dynamiquement avec priorité, échéance et statut
