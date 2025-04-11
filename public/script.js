@@ -120,36 +120,25 @@ async function fetchTasks() {
 
 // Afficher les tâches dans un tableau
 function displayTasks(tasks) {
-  taskList.innerHTML = ""; // Vider la liste avant d'ajouter les tâches
+  taskList.innerHTML = "";
 
   tasks.forEach((task) => {
     const li = document.createElement("li");
     li.classList.add("task-container");
 
-    // 📌 Formatage de la date d'échéance
-    let echeance = task.echeance
-      ? new Date(task.echeance).toLocaleDateString()
-      : "Aucune";
+    let echeance = task.echeance ? new Date(task.echeance).toLocaleDateString() : "Aucune";
 
     li.innerHTML = `
-      <h3>${task.titre}</h3>
-      <p><strong>Auteur :</strong> ${task.auteur?.prenom || "Inconnu"} ${
-      task.auteur?.nom || ""
-    }</p>
-      <p><strong>Échéance :</strong> ${echeance}</p>
-      <p><strong>Priorité :</strong> ${task.priorite}</p>
-      <p><em>${task.statut}</em></p>
+      <h3 class="task-title">${task.titre}</h3>
+      <p><strong class="task-label">Auteur :</strong> <span class="task-value">${task.auteur?.prenom || "Inconnu"} ${task.auteur?.nom || ""}</span></p>
+      <p><strong class="task-label">Échéance :</strong> <span class="task-value">${echeance}</span></p>
+      <p><strong class="task-label">Priorité :</strong> <span class="task-value">${task.priorite}</span></p>
+      <p><em class="task-status">${task.statut}</em></p>
 
       <div class="task-buttons">
-        <button class="btn-green" onclick="viewTask('${
-          task._id
-        }')">Voir</button>
-        <button class="btn-green" onclick="editTask('${task._id}', '${
-      task.titre
-    }', '${task.statut}', '${task.priorite}')">Modifier</button>
-        <button class="btn-red" onclick="deleteTask('${
-          task._id
-        }')">Supprimer</button>
+        <button class="btn-green">Voir</button>
+        <button class="btn-green">Modifier</button>
+        <button class="btn-red">Supprimer</button>
       </div>
     `;
 
@@ -512,6 +501,97 @@ document.getElementById("toggleFilters").addEventListener("click", function () {
     this.textContent = "❌ Masquer les filtres";
   }
 });
+
+function exportToCSV(tasks) {
+  // En-têtes CSV avec toutes les colonnes nécessaires
+  let csvContent = "Titre,Description,Statut,Priorité,Échéance,Catégorie,Étiquettes,Auteur,Email Auteur,Sous-tâches,Commentaires,Historique des Modifications\n";
+
+  tasks.forEach((task) => {
+    // Formatage des données de base
+    const echeance = task.echeance ? new Date(task.echeance).toLocaleDateString() : "Aucune";
+    const auteur = `${task.auteur?.prenom || "Inconnu"} ${task.auteur?.nom || ""}`;
+    const emailAuteur = task.auteur?.email || "Non renseigné";
+    const etiquettes = task.etiquettes ? task.etiquettes.join(", ") : "Aucune";
+
+    // Formatage des sous-tâches
+    const sousTaches = task.sousTaches
+      ? task.sousTaches
+          .map(
+            (st) =>
+              `${st.titre} - ${st.statut}\nÉchéance: ${
+                st.echeance ? new Date(st.echeance).toLocaleDateString() : "Aucune"
+              }`
+          )
+          .join("\n")
+      : "Aucune";
+
+    // Formatage des commentaires
+    const commentaires = task.commentaires
+      ? task.commentaires
+          .map((c) => `${c.contenu}\n- ${c.auteur} (${new Date().toLocaleDateString()})`)
+          .join("\n")
+      : "Aucun";
+
+    // Formatage de l'historique des modifications (exemple simplifié)
+    const historique = task.historique
+      ? task.historique.map((h) => `${h.champ}: ${h.ancienneValeur} → ${h.nouvelleValeur}`).join("\n")
+      : "Aucun";
+
+    // Ajout de la ligne CSV
+    csvContent += `"${task.titre}","${task.description || "Aucune"}","${task.statut}","${
+      task.priorite
+    }","${echeance}","${task.categorie || "Aucune"}","${etiquettes}","${auteur}","${emailAuteur}","${sousTaches}","${commentaires}","${historique}"\n`;
+  });
+
+  // Téléchargement du fichier CSV
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "tâches_détaillées.csv";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+// Ajoutez un bouton pour déclencher l'export
+document.getElementById("exportCSV").addEventListener("click", async () => {
+  const response = await fetch("/tasks");
+  const tasks = await response.json();
+  exportToCSV(tasks);
+});
+
+// Gestion du mode sombre
+const themeToggle = document.getElementById("themeToggle");
+const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+// Vérifie le thème système ou le localStorage
+const currentTheme = localStorage.getItem("theme");
+if (currentTheme === "dark" || (currentTheme === null && prefersDarkScheme.matches)) {
+    document.documentElement.setAttribute("data-theme", "dark");
+    themeToggle.textContent = "☀️ Mode Clair";
+}
+
+// Fonction pour appliquer le thème
+function applyTheme() {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.body.className = isDark ? 'dark-theme' : 'light-theme';
+}
+
+// Modifiez l'écouteur du toggle
+themeToggle.addEventListener("click", () => {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  if (isDark) {
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    localStorage.setItem("theme", "dark");
+  }
+  applyTheme();
+});
+
+// Appliquez le thème au chargement
+applyTheme();
 
 // Charger les tâches au démarrage
 fetchTasks();

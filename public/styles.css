@@ -1,9 +1,39 @@
+/* Variables globales */
+:root {
+  /* Thème clair */
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --primary-color: #4CAF50;
+  --secondary-color: #f5f5f5;
+  --card-bg: #f8f9fa;
+  --form-bg: #f1f1f1;
+  --border-color: #e0e2e5;
+  --placeholder-color: #6c757d;
+  --label-color: #4CAF50;
+}
+
+[data-theme="dark"] {
+  /* Thème sombre */
+  --bg-color: #121212;
+  --text-color: #f8f9fa;
+  --primary-color: #2E7D32;
+  --secondary-color: #2d2d2d;
+  --card-bg: #1e1e1e;
+  --form-bg: #252525;
+  --border-color: #444444;
+  --placeholder-color: #adb5bd;
+  --label-color: #a0a0ff;
+}
+
+/* Styles de base */
 body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
   font-family: Arial, sans-serif;
   max-width: 85vw;
   margin: auto;
   padding: 20px;
-  background-color: #dfdfdf;
 }
 
 input,
@@ -21,7 +51,7 @@ button {
 h1,
 h2,
 h3 {
-  color: #333;
+  color: var(--text-color);
   text-align: center;
 }
 
@@ -35,7 +65,7 @@ button {
 }
 
 button[type="submit"] {
-  background: #007bff;
+  background: var(--primary-color);
   color: white;
 }
 
@@ -44,7 +74,7 @@ button[type="submit"]:hover {
 }
 
 .btn-green {
-  background-color: green;
+  background-color: var(--primary-color);
   color: white;
 }
 
@@ -53,7 +83,7 @@ button[type="submit"]:hover {
 }
 
 .btn-red {
-  background-color: red;
+  background-color: #dc3545;
   color: white;
 }
 
@@ -85,7 +115,7 @@ li {
 }
 
 .task-status {
-  color: #555;
+  color: var(--text-color);
   margin-bottom: 10px;
   font-style: italic;
 }
@@ -103,16 +133,15 @@ li {
 }
 
 .task-container {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  margin: auto;
-  margin-bottom: 20px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 .task-container h2 {
-  color: #333;
+  color: var(--text-color);
   text-align: center;
 }
 
@@ -128,7 +157,7 @@ li {
 
 h4 {
   margin-top: 20px;
-  color: #007bff;
+  color: var(--text-color);
 }
 
 table {
@@ -150,7 +179,7 @@ strong {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   text-align: center;
   border: none;
@@ -164,7 +193,7 @@ strong {
 }
 
 #toggleFilters {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 10px 15px;
@@ -239,17 +268,20 @@ strong {
   max-width: 50vw;
   margin: auto;
   padding: 20px;
-  background: white;
+  background: var(--card-bg);
   border-radius: 10px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
 }
 
 #filterMenu {
   width: 35%;
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--form-bg);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
   display: none;
 }
 
@@ -273,7 +305,7 @@ strong {
 }
 
 .sort-btn {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 8px;
@@ -284,4 +316,35 @@ strong {
 
 .sort-btn:hover {
   background-color: #0056b3;
+}
+
+/* Bouton de thème */
+.theme-toggle {
+  background: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+/* Textes dynamiques */
+.task-title {
+  color: var(--text-color);
+  margin-top: 0;
+}
+
+.task-label {
+  color: var(--label-color);
+  font-weight: bold;
+}
+
+.task-value {
+  color: var(--text-color);
+}
+
+/* Transitions */
+* {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }

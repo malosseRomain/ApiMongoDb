@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Gestion des Tâches</h1>
+    <header>
+      <h1>Gestionnaire de Tâches</h1>
+      <button id="themeToggle" class="theme-toggle">🌙 Mode Sombre</button>
+    </header>
 
     <!-- Formulaire pour ajouter une nouvelle tâche -->
     <form id="taskForm">
@@ -66,6 +69,7 @@
     </form>
 
     <h2 style="margin-top: 20vh">Liste des Tâches</h2>
+    <button id="exportCSV" class="btn-blue" style="margin-left: 20px;">Exporter en CSV</button>
 
     <!-- Bouton pour afficher/cacher le menu -->
     <button id="toggleFilters">🔍 Afficher les filtres</button>
