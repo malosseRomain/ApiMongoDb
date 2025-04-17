@@ -518,34 +518,30 @@ async function exportToCSV() {
 
     // Formatage des données pour chaque tâche
     const csvRows = tasks.map(task => {
-      // Données de base
       const echeance = task.echeance ? new Date(task.echeance).toLocaleDateString() : "Aucune";
       const auteur = `${task.auteur?.prenom || "Inconnu"} ${task.auteur?.nom || ""}`;
       const emailAuteur = task.auteur?.email || "Non renseigné";
       const etiquettes = task.etiquettes?.join(", ") || "Aucune";
 
-      // Sous-tâches (format: "Titre - Statut (Échéance)")
       const sousTaches = task.sousTaches?.map(st => 
         `${st.titre} - ${st.statut} (${st.echeance ? new Date(st.echeance).toLocaleDateString() : "Aucune"})`
       ).join(" | ") || "Aucune";
 
-      // Commentaires (format: "Auteur: Contenu")
       const commentaires = task.commentaires?.map(c => 
         `${c.auteur || "Anonyme"}: ${c.contenu}`
       ).join(" | ") || "Aucun";
 
-      // Ligne CSV
       return `"${task.titre}","${task.description || "Aucune"}","${task.statut}","${task.priorite}","${echeance}","${task.categorie || "Aucune"}","${etiquettes}","${auteur}","${emailAuteur}","${sousTaches}","${commentaires}"`;
     });
 
-    const csvContent = csvHeader + csvRows.join("\n");
+    // Ajout du BOM UTF-8 (\uFEFF) pour compatibilité Excel
+    const csvContent = "\uFEFF" + csvHeader + csvRows.join("\n");
 
-    // Téléchargement
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `tâches_complet_${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `taches_complet_${new Date().toISOString().split("T")[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
