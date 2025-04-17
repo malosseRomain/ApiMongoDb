@@ -136,9 +136,9 @@ function displayTasks(tasks) {
       <p><em class="task-status">${task.statut}</em></p>
 
       <div class="task-buttons">
-        <button class="btn-green">Voir</button>
-        <button class="btn-green">Modifier</button>
-        <button class="btn-red">Supprimer</button>
+        <button class="btn-green" onclick="viewTask('${task._id}')">Voir</button>
+        <button class="btn-green" onclick="editTask('${task._id}')">Modifier</button>
+        <button class="btn-red" onclick="deleteTask('${task._id}')">Supprimer</button>
       </div>
     `;
 
@@ -502,62 +502,65 @@ document.getElementById("toggleFilters").addEventListener("click", function () {
   }
 });
 
-function exportToCSV(tasks) {
-  // En-têtes CSV avec toutes les colonnes nécessaires
-  let csvContent = "Titre,Description,Statut,Priorité,Échéance,Catégorie,Étiquettes,Auteur,Email Auteur,Sous-tâches,Commentaires,Historique des Modifications\n";
+// Export CSV (utilise les données de l'API, pas le DOM)
+async function exportToCSV() {
+  try {
+    const response = await fetch("/tasks");
+    const tasks = await response.json();
 
-  tasks.forEach((task) => {
-    // Formatage des données de base
-    const echeance = task.echeance ? new Date(task.echeance).toLocaleDateString() : "Aucune";
-    const auteur = `${task.auteur?.prenom || "Inconnu"} ${task.auteur?.nom || ""}`;
-    const emailAuteur = task.auteur?.email || "Non renseigné";
-    const etiquettes = task.etiquettes ? task.etiquettes.join(", ") : "Aucune";
+    if (!tasks.length) {
+      alert("Aucune tâche à exporter !");
+      return;
+    }
 
-    // Formatage des sous-tâches
-    const sousTaches = task.sousTaches
-      ? task.sousTaches
-          .map(
-            (st) =>
-              `${st.titre} - ${st.statut}\nÉchéance: ${
-                st.echeance ? new Date(st.echeance).toLocaleDateString() : "Aucune"
-              }`
-          )
-          .join("\n")
-      : "Aucune";
+    // En-têtes CSV avec toutes les colonnes
+    const csvHeader = "Titre,Description,Statut,Priorité,Échéance,Catégorie,Étiquettes,Auteur,Email Auteur,Sous-tâches,Commentaires\n";
 
-    // Formatage des commentaires
-    const commentaires = task.commentaires
-      ? task.commentaires
-          .map((c) => `${c.contenu}\n- ${c.auteur} (${new Date().toLocaleDateString()})`)
-          .join("\n")
-      : "Aucun";
+    // Formatage des données pour chaque tâche
+    const csvRows = tasks.map(task => {
+      // Données de base
+      const echeance = task.echeance ? new Date(task.echeance).toLocaleDateString() : "Aucune";
+      const auteur = `${task.auteur?.prenom || "Inconnu"} ${task.auteur?.nom || ""}`;
+      const emailAuteur = task.auteur?.email || "Non renseigné";
+      const etiquettes = task.etiquettes?.join(", ") || "Aucune";
 
-    // Formatage de l'historique des modifications (exemple simplifié)
-    const historique = task.historique
-      ? task.historique.map((h) => `${h.champ}: ${h.ancienneValeur} → ${h.nouvelleValeur}`).join("\n")
-      : "Aucun";
+      // Sous-tâches (format: "Titre - Statut (Échéance)")
+      const sousTaches = task.sousTaches?.map(st => 
+        `${st.titre} - ${st.statut} (${st.echeance ? new Date(st.echeance).toLocaleDateString() : "Aucune"})`
+      ).join(" | ") || "Aucune";
 
-    // Ajout de la ligne CSV
-    csvContent += `"${task.titre}","${task.description || "Aucune"}","${task.statut}","${
-      task.priorite
-    }","${echeance}","${task.categorie || "Aucune"}","${etiquettes}","${auteur}","${emailAuteur}","${sousTaches}","${commentaires}","${historique}"\n`;
-  });
+      // Commentaires (format: "Auteur: Contenu")
+      const commentaires = task.commentaires?.map(c => 
+        `${c.auteur || "Anonyme"}: ${c.contenu}`
+      ).join(" | ") || "Aucun";
 
-  // Téléchargement du fichier CSV
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "tâches_détaillées.csv";
-  link.click();
-  URL.revokeObjectURL(url);
+      // Ligne CSV
+      return `"${task.titre}","${task.description || "Aucune"}","${task.statut}","${task.priorite}","${echeance}","${task.categorie || "Aucune"}","${etiquettes}","${auteur}","${emailAuteur}","${sousTaches}","${commentaires}"`;
+    });
+
+    const csvContent = csvHeader + csvRows.join("\n");
+
+    // Téléchargement
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `tâches_complet_${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+  } catch (err) {
+    console.error("Erreur lors de l'export :", err);
+    alert("Échec de l'export CSV");
+  }
 }
 
-// Ajoutez un bouton pour déclencher l'export
-document.getElementById("exportCSV").addEventListener("click", async () => {
-  const response = await fetch("/tasks");
-  const tasks = await response.json();
-  exportToCSV(tasks);
+// Initialisation
+document.addEventListener("DOMContentLoaded", () => {
+  fetchTasks();
+  document.getElementById("exportCSV").addEventListener("click", exportToCSV);
 });
 
 // Gestion du mode sombre
